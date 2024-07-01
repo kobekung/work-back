@@ -6,6 +6,5 @@ export interface ITask extends IDefault {
     name?: string;
     startDate?: Date;
     endDate?: Date;
-    createDate?: Date;
     status?: number;
 }

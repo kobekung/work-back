@@ -5,5 +5,4 @@ export interface IComment extends IDefault {
     userId?: number;
     comment?: string;
     img?: Blob;
-    createDate?: Date;
 }

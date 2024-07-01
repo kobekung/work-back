@@ -6,5 +6,4 @@ export interface IPlan extends IDefault {
     name?: string;
     startDate?: Date;
     endDate?: Date;
-    createDate?: Date;
 }
