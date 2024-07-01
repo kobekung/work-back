@@ -32,12 +32,6 @@ export class Project extends Model<Project | IProject> implements IProject {
     endDate: Date;
 
     @Column({
-        allowNull: false,
-        type: DataType.DATE,
-    })
-    createDate: Date;
-
-    @Column({
         allowNull: true,
         type: DataType.NUMBER,
     })

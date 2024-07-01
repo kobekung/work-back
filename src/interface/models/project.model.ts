@@ -5,7 +5,6 @@ export interface IProject extends IDefault {
     name: string;
     startDate: Date;
     endDate: Date;
-    createDate: Date;
     type?: number;
     unit?: string;
     status?: number;
