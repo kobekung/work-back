@@ -17,19 +17,19 @@ export class User extends Model<User | IUser> implements IUser {
     allowNull: false,
     type: DataType.STRING,
   })
-  name: string;
-
-  @Column({
-    allowNull: false,
-    type: DataType.STRING,
-  })
-  email: string;
+  firstName: string;
 
   @Column({
     allowNull: false,
     type: DataType.STRING,
   })
   lastName: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
+  })
+  email: string;
 
   @Column({
     allowNull: true,
