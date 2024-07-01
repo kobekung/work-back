@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import * as dotenv from 'dotenv';
+import { User } from 'src/models/user.model';
 
 dotenv.config();
 export const databaseProviders = [
@@ -21,7 +22,7 @@ export const databaseProviders = [
           database: process.env.DATABASE,
           // dialectOptions: { connectString: process.env.DB_CONNECTION_STRING },
         });
-        // sequelize.addModels();
+        sequelize.addModels([User]);
         await sequelize.sync({ alter: true });
         console.log('Database connected');
         return sequelize;
