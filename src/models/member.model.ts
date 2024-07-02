@@ -36,10 +36,4 @@ export class Member extends Model<Member | IMember> implements IMember {
         type: DataType.INTEGER,
     })
     status?: number;
-
-    @Column({
-        allowNull: false,
-        type: DataType.DATE,
-    })
-    createDate: Date;
 }

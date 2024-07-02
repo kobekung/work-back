@@ -20,12 +20,6 @@ export class ProjectLog extends Model<ProjectLog | IProjectLog> implements IProj
     projectId: number;
 
     @Column({
-        allowNull: false,
-        type: DataType.DATE,
-    })
-    updateDate: Date;
-
-    @Column({
         allowNull: true,
         type: DataType.STRING,
     })

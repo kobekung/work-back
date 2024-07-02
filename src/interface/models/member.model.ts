@@ -6,5 +6,4 @@ export interface IMember extends IDefault {
     userId: number;
     roleId?: number;
     status?: number;
-    createDate: Date;
 }
