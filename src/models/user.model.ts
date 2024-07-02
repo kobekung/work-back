@@ -16,6 +16,13 @@ export class User extends Model<User | IUser> implements IUser {
   @Column({
     allowNull: false,
     type: DataType.STRING,
+    unique: true,
+  })
+  idp: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
   })
   firstName: string;
 
@@ -43,3 +50,10 @@ export class User extends Model<User | IUser> implements IUser {
   })
   refreshToken?: string;
 }
+
+export const userProviders = [
+  {
+    provide: 'USER_REPOSITORY',
+    useValue: User,
+  },
+];

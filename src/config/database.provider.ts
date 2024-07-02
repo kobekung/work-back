@@ -23,7 +23,7 @@ export const databaseProviders = [
           // dialectOptions: { connectString: process.env.DB_CONNECTION_STRING },
         });
         sequelize.addModels([User]);
-        await sequelize.sync({ alter: true });
+        await sequelize.sync({ alter: false });
         console.log('Database connected');
         return sequelize;
       } catch (e) {
