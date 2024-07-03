@@ -32,7 +32,7 @@ export class ProjectService {
   async updateProject(id: number, project: CreateProjectDto) {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.update(project, { where: { id } });
+      await this.repository.update(project, { where: { id }, transaction: t });
       await t.commit();
       return 'Project Updated Successfully';
     } catch (err) {
@@ -46,6 +46,7 @@ export class ProjectService {
     try {
       await this.repository.destroy({
         where: { id },
+        transaction: t,
       });
       await t.commit();
       return 'Project Deleted Successfully';
