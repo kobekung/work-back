@@ -3,6 +3,8 @@ import { UserModule } from 'src/modules/user/user.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from 'src/models/user.model';
 import * as dotenv from 'dotenv';
+import { ProjectModule } from 'src/modules/project/project.module';
+import { Project } from 'src/models/project.model';
 
 dotenv.config();
 @Module({
@@ -21,9 +23,10 @@ dotenv.config();
       database: process.env.DATABASE,
       autoLoadModels: true,
       synchronize: true,
-      models: [User],
+      models: [User, Project],
     }),
     UserModule,
+    ProjectModule
   ],
 })
 export class MasterModule {}
