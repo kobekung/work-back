@@ -1,11 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class RoleDto {
   @IsString()
@@ -14,6 +8,7 @@ export class RoleDto {
 
   @IsBoolean()
   @IsOptional()
+  T;
   @Type(() => Boolean)
   isEditPlan?: boolean;
 
