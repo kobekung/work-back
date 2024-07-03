@@ -8,7 +8,6 @@ export class RoleDto {
 
   @IsBoolean()
   @IsOptional()
-  T;
   @Type(() => Boolean)
   isEditPlan?: boolean;
 
