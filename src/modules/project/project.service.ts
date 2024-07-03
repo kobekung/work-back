@@ -15,41 +15,41 @@ export class ProjectService {
     return await this.repository.findByPk(id);
   }
 
-  async createProject(project: CreateProjectDto) {
+  async createProject(project: CreateProjectDto): Promise<Project> {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.create(project, {
+      const projectCreated = await this.repository.create(project, {
         transaction: t,
       });
       await t.commit();
-      return 'Project Created Successfully';
+      return projectCreated;
     } catch (err) {
       await t.rollback();
       throw new Error(err);
     }
   }
 
-  async updateProject(id: number, project: CreateProjectDto) {
+  async updateProject(id: number, project: CreateProjectDto): Promise<[affectedCount: number]> {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.update(project, { where: { id }, transaction: t });
+      const projectUpdated = await this.repository.update(project, { where: { id }, transaction: t });
       await t.commit();
-      return 'Project Updated Successfully';
+      return projectUpdated;
     } catch (err) {
       await t.rollback();
       throw new Error(err);
     }
   }
 
-  async deleteProject(id: number): Promise<String> {
+  async deleteProject(id: number): Promise<number> {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.destroy({
+      const projectDeleted = await this.repository.destroy({
         where: { id },
         transaction: t,
       });
       await t.commit();
-      return 'Project Deleted Successfully';
+      return projectDeleted;
     } catch (err) {
       await t.rollback();
       throw new Error(err);
