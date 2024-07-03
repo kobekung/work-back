@@ -18,7 +18,9 @@ export class ProjectService {
   async createProject(project: CreateProjectDto) {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.create(project);
+      await this.repository.create(project, {
+        transaction: t,
+      });
       await t.commit();
       return 'Project Created Successfully';
     } catch (err) {
