@@ -26,7 +26,7 @@ export class RoleController {
   }
 
   @Post()
-  async createRole(@Body() role: RoleDto): Promise<String> {
+  async createRole(@Body() role: RoleDto): Promise<Role> {
     return await this.roleService.createRole(role);
   }
 
@@ -34,12 +34,12 @@ export class RoleController {
   async updateRole(
     @Param('id') id: number,
     @Body() role: RoleDto,
-  ): Promise<String> {
+  ): Promise<[affectedCount: number]> {
     return await this.roleService.updateRole(id, role);
   }
 
   @Delete('/:id')
-  async deleteRole(@Param('id') id: number): Promise<String> {
+  async deleteRole(@Param('id') id: number): Promise<number> {
     return await this.roleService.deleteRole(id);
   }
 }

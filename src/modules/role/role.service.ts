@@ -15,41 +15,41 @@ export class RoleService {
     return await this.repository.findByPk(id);
   }
 
-  async createRole(role: RoleDto) {
+  async createRole(role: RoleDto): Promise<Role> {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.create(role, {
+      const roleCreated = await this.repository.create(role, {
         transaction: t,
       });
       await t.commit();
-      return 'Role Created Successfully';
+      return roleCreated;
     } catch (err) {
       await t.rollback();
       throw new Error(err);
     }
   }
 
-  async updateRole(id: number, role: RoleDto) {
+  async updateRole(id: number, role: RoleDto): Promise<[affectedCount: number]> {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.update(role, { where: { id }, transaction: t });
+      const roleUpdated = await this.repository.update(role, { where: { id }, transaction: t });
       await t.commit();
-      return 'Role Updated Successfully';
+      return roleUpdated;
     } catch (err) {
       await t.rollback();
       throw new Error(err);
     }
   }
 
-  async deleteRole(id: number): Promise<String> {
+  async deleteRole(id: number): Promise<number> {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.destroy({
+      const roleDeleted = await this.repository.destroy({
         where: { id },
         transaction: t,
       });
       await t.commit();
-      return 'Role Deleted Successfully';
+      return roleDeleted;
     } catch (err) {
       await t.rollback();
       throw new Error(err);
