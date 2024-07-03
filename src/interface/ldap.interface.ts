@@ -2,6 +2,10 @@ export interface ILdapResponse {
   token: string;
   refreshToken: string;
 }
+export interface ILdapRefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
+}
 
 export interface IProfile {
   idp: string;
