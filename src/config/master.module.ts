@@ -5,8 +5,8 @@ import { User } from 'src/models/user.model';
 import * as dotenv from 'dotenv';
 import { ProjectModule } from 'src/modules/project/project.module';
 import { Project } from 'src/models/project.model';
-import { Member } from 'src/models/member.model';
-import { MemberModule } from 'src/modules/member/member.module';
+import { RoleModule } from 'src/modules/role/role.module';
+import { Role } from 'src/models/role.model';
 
 dotenv.config();
 @Module({
@@ -25,11 +25,11 @@ dotenv.config();
       database: process.env.DATABASE,
       autoLoadModels: true,
       synchronize: true,
-      models: [User, Project ,Member],
+      models: [User, Project, Role],
     }),
     UserModule,
     ProjectModule,
-    MemberModule
+    RoleModule
   ],
 })
 export class MasterModule {}

@@ -18,17 +18,17 @@ export class ProjectController {
     }
 
     @Post()
-    async createProject(@Body() project: CreateProjectDto): Promise<String> {
+    async createProject(@Body() project: CreateProjectDto): Promise<Project> {
         return await this.projectService.createProject(project);
     }
 
     @Put('/:id')
-    async updateProject(@Param('id') id: number, @Body() project: CreateProjectDto): Promise<String> {
+    async updateProject(@Param('id') id: number, @Body() project: CreateProjectDto): Promise<[affectedCount: number]> {
         return await this.projectService.updateProject(id, project);
     }
 
     @Delete('/:id')
-    async deleteProject(@Param('id') id: number): Promise<String> {
+    async deleteProject(@Param('id') id: number): Promise<number> {
         return await this.projectService.deleteProject(id);
     }
 }
