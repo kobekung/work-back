@@ -49,11 +49,7 @@ export class User extends Model<User | IUser> implements IUser {
     type: DataType.STRING,
   })
   refreshToken?: string;
+
+  
 }
 
-export const userProviders = [
-  {
-    provide: 'USER_REPOSITORY',
-    useValue: User,
-  },
-];
