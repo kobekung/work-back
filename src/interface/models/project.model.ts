@@ -12,6 +12,6 @@ export interface IProject extends IDefault {
   status?: number;
   budgetYear?: number;
   ownerUnitId?: number;
-  projectUnit?: PROJECT_UNIT_ENUM;
+  projectUnit?: number;
   logs?: IProjectLog[];
 }

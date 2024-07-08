@@ -47,7 +47,7 @@ export class CreateProjectDto {
   @Type(() => Number)
   ownerUnitId?: number;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  projectUnit?: PROJECT_UNIT_ENUM;
+  projectUnit?: number;
 }

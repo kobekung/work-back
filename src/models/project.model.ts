@@ -66,9 +66,9 @@ export class Project extends Model<Project | IProject> implements IProject {
 
   @Column({
     allowNull: true,
-    type: DataType.STRING,
+    type: DataType.INTEGER,
   })
-  projectUnit?: PROJECT_UNIT_ENUM;
+  projectUnit?: number;
 
   @HasMany(() => Member, {
     onDelete: 'CASCADE',
