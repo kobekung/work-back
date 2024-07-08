@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Project } from 'src/models/project.model';
 import { CreateProjectDto } from './dto/project.dto';
@@ -25,7 +25,7 @@ export class ProjectService {
       return projectCreated;
     } catch (err) {
       await t.rollback();
-      throw new Error(err);
+      throw new HttpException(err.response.data, err.response.status);
     }
   }
 
@@ -43,7 +43,7 @@ export class ProjectService {
       return projectUpdated;
     } catch (err) {
       await t.rollback();
-      throw new Error(err);
+      throw new HttpException(err.response.data, err.response.status);
     }
   }
 

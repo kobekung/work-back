@@ -28,7 +28,7 @@ dotenv.config();
       password: process.env.DB_PASSWORD,
       database: process.env.DATABASE,
       autoLoadModels: true,
-      synchronize: true,
+      synchronize: false,
       models: [User, Project, Role, Member, ProjectLog, ProjectUnit],
     }),
     UserModule,

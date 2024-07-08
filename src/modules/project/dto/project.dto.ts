@@ -49,5 +49,5 @@ export class CreateProjectDto {
 
   @IsNumber()
   @IsOptional()
-  projectUnit?: number;
+  projectUnitId?: number;
 }
