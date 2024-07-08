@@ -1,8 +1,9 @@
-import { Table, Model, Column, DataType, HasMany } from 'sequelize-typescript';
+import { Table, Model, Column, DataType, HasMany, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { IProject } from 'src/interface/models/project.model';
 import { Member } from './member.model';
 import { ProjectLog } from './project_log.model';
 import { PROJECT_UNIT_ENUM } from 'src/enum/project.unit.enum';
+import { ProjectUnit } from './project_unit.model';
 
 @Table({
   paranoid: true,
@@ -42,12 +43,6 @@ export class Project extends Model<Project | IProject> implements IProject {
 
   @Column({
     allowNull: true,
-    type: DataType.STRING,
-  })
-  unit?: string;
-
-  @Column({
-    allowNull: true,
     type: DataType.INTEGER,
   })
   status?: number;
@@ -64,11 +59,13 @@ export class Project extends Model<Project | IProject> implements IProject {
   })
   ownerUnitId?: number;
 
+  @ForeignKey(() => ProjectUnit)
   @Column({
     allowNull: true,
     type: DataType.INTEGER,
   })
-  projectUnit?: number;
+  projectUnitId?: number;
+
 
   @HasMany(() => Member, {
     onDelete: 'CASCADE',
@@ -81,4 +78,8 @@ export class Project extends Model<Project | IProject> implements IProject {
     onUpdate: 'CASCADE',
   })
   logs?: ProjectLog[];
+  
+  @BelongsTo(() => ProjectUnit)
+  projectUnit?: ProjectUnit;
 }
+

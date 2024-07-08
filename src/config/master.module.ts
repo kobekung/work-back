@@ -10,6 +10,7 @@ import { Role } from 'src/models/role.model';
 import { Member } from 'src/models/member.model';
 import { MemberModule } from 'src/modules/member/member.module';
 import { ProjectLog } from 'src/models/project_log.model';
+import { ProjectUnit } from 'src/models/project_unit.model';
 
 dotenv.config();
 @Module({
@@ -28,7 +29,7 @@ dotenv.config();
       database: process.env.DATABASE,
       autoLoadModels: true,
       synchronize: true,
-      models: [User, Project, Role, Member, ProjectLog],
+      models: [User, Project, Role, Member, ProjectLog, ProjectUnit],
     }),
     UserModule,
     ProjectModule,
