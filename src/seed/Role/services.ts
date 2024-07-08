@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Repository } from 'sequelize-typescript';
+import { ENUM_RoleName } from 'src/enum/role.enum';
 import { IRole } from 'src/interface/models/role.model';
 
 import { Role } from 'src/models/role.model';
@@ -16,13 +17,13 @@ export class RoleSeederService {
   async seedRoles() {
     const roles = [
       {
-        name: 'Admin',
+        name: ENUM_RoleName.Owner,
         isEditPlan: true,
         isEditProject: true,
         isEditTask: true,
       },
       {
-        name: 'Developer',
+        name: ENUM_RoleName.Developer,
         isEditTask: true,
         isEditProject: false,
         isEditPlan: false,
