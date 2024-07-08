@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { PROJECT_UNIT_ENUM } from 'src/enum/project.unit.enum';
 
 export class CreateProjectDto {
   @IsString()
@@ -39,4 +46,8 @@ export class CreateProjectDto {
   @IsOptional()
   @Type(() => Number)
   ownerUnitId?: number;
+
+  @IsString()
+  @IsOptional()
+  projectUnit?: PROJECT_UNIT_ENUM;
 }

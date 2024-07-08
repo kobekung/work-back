@@ -1,3 +1,4 @@
+import { PROJECT_UNIT_ENUM } from 'src/enum/project.unit.enum';
 import { IDefault } from '../default.interface';
 import { IProjectLog } from './project_log.model';
 
@@ -11,6 +12,6 @@ export interface IProject extends IDefault {
   status?: number;
   budgetYear?: number;
   ownerUnitId?: number;
-  projectUnit?: string;
+  projectUnit?: PROJECT_UNIT_ENUM;
   logs?: IProjectLog[];
 }

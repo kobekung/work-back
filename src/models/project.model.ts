@@ -2,6 +2,7 @@ import { Table, Model, Column, DataType, HasMany } from 'sequelize-typescript';
 import { IProject } from 'src/interface/models/project.model';
 import { Member } from './member.model';
 import { ProjectLog } from './project_log.model';
+import { PROJECT_UNIT_ENUM } from 'src/enum/project.unit.enum';
 
 @Table({
   paranoid: true,
@@ -67,7 +68,7 @@ export class Project extends Model<Project | IProject> implements IProject {
     allowNull: true,
     type: DataType.STRING,
   })
-  projectUnit?: string;
+  projectUnit?: PROJECT_UNIT_ENUM;
 
   @HasMany(() => Member, {
     onDelete: 'CASCADE',
