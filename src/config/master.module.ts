@@ -11,6 +11,7 @@ import { Member } from 'src/models/member.model';
 import { MemberModule } from 'src/modules/member/member.module';
 import { ProjectLog } from 'src/models/project_log.model';
 import { ProjectUnit } from 'src/models/project_unit.model';
+import { UnitModule } from 'src/modules/unit/unit.module';
 
 dotenv.config();
 @Module({
@@ -35,6 +36,7 @@ dotenv.config();
     ProjectModule,
     RoleModule,
     MemberModule,
+    UnitModule,
   ],
 })
 export class MasterModule {}
