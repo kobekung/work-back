@@ -1,5 +1,5 @@
 import {
-    BelongsTo,
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,
@@ -8,6 +8,8 @@ import {
 } from 'sequelize-typescript';
 import { IMember } from 'src/interface/models/member.model';
 import { Role } from './role.model';
+import { Project } from './project.model';
+import { User } from './user.model';
 
 @Table({
   paranoid: true,
@@ -21,12 +23,14 @@ export class Member extends Model<Member | IMember> implements IMember {
   })
   id: number;
 
+  @ForeignKey(() => Project)
   @Column({
     allowNull: false,
     type: DataType.INTEGER,
   })
   projectId: number;
 
+  @ForeignKey(() => User)
   @Column({
     allowNull: false,
     type: DataType.INTEGER,
@@ -48,4 +52,10 @@ export class Member extends Model<Member | IMember> implements IMember {
 
   @BelongsTo(() => Role)
   role?: Role;
+
+  @BelongsTo(() => Project)
+  project?: Project;
+
+  @BelongsTo(() => User)
+  user?: User;
 }

@@ -29,10 +29,16 @@ export class ProjectService {
     }
   }
 
-  async updateProject(id: number, project: CreateProjectDto): Promise<[affectedCount: number]> {
+  async updateProject(
+    id: number,
+    project: CreateProjectDto,
+  ): Promise<[affectedCount: number]> {
     const t = await this.repository.sequelize.transaction();
     try {
-      const projectUpdated = await this.repository.update(project, { where: { id }, transaction: t });
+      const projectUpdated = await this.repository.update(project, {
+        where: { id },
+        transaction: t,
+      });
       await t.commit();
       return projectUpdated;
     } catch (err) {

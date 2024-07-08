@@ -14,7 +14,6 @@ export class AppModule implements OnModuleInit {
   constructor(private readonly roleSeederService: RoleSeederService) {}
 
   async onModuleInit() {
-    console.log("hit")
     await this.roleSeederService.seedRoles();
   }
 }

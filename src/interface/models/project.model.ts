@@ -1,4 +1,5 @@
 import { IDefault } from '../default.interface';
+import { IProjectLog } from './project_log.model';
 
 export interface IProject extends IDefault {
   id: number;
@@ -10,4 +11,6 @@ export interface IProject extends IDefault {
   status?: number;
   budgetYear?: number;
   ownerUnitId?: number;
+  projectUnit?: string;
+  logs?: IProjectLog[];
 }

@@ -1,5 +1,7 @@
-import { Table, Model, Column, DataType } from 'sequelize-typescript';
+import { Table, Model, Column, DataType, HasMany } from 'sequelize-typescript';
 import { IProject } from 'src/interface/models/project.model';
+import { Member } from './member.model';
+import { ProjectLog } from './project_log.model';
 
 @Table({
   paranoid: true,
@@ -60,4 +62,22 @@ export class Project extends Model<Project | IProject> implements IProject {
     type: DataType.INTEGER,
   })
   ownerUnitId?: number;
+
+  @Column({
+    allowNull: true,
+    type: DataType.STRING,
+  })
+  projectUnit?: string;
+
+  @HasMany(() => Member, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  members?: Member[];
+
+  @HasMany(() => ProjectLog, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  logs?: ProjectLog[];
 }
