@@ -16,4 +16,8 @@ export class AddMemberDto {
   @IsNumber()
   @IsOptional()
   status?: number;
+
+  @IsNumber()
+  @IsOptional()
+  senderId?: number;
 }

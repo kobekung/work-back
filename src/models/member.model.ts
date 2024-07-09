@@ -44,6 +44,13 @@ export class Member extends Model<Member | IMember> implements IMember {
   })
   roleId?: number;
 
+  @ForeignKey(() => User)
+  @Column({
+    allowNull: true,
+    type: DataType.INTEGER,
+  })
+  senderId?: number;
+
   @Column({
     allowNull: true,
     type: DataType.INTEGER,
@@ -58,4 +65,7 @@ export class Member extends Model<Member | IMember> implements IMember {
 
   @BelongsTo(() => User)
   user?: User;
+
+  @BelongsTo(() => User , 'senderId')
+  sender?: User;
 }

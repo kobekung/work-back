@@ -20,12 +20,13 @@ export class ProjectService {
     try {
       const projectCreated = await this.repository.create(project, {
         transaction: t,
-      });
+      }); 
       await t.commit();
       return projectCreated;
     } catch (err) {
+      console.log(err)
       await t.rollback();
-      throw new HttpException(err.response.data, err.response.status);
+      throw new HttpException(err.response, err.response);
     }
   }
 
