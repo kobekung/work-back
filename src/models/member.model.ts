@@ -54,6 +54,7 @@ export class Member extends Model<Member | IMember> implements IMember {
   @Column({
     allowNull: true,
     type: DataType.INTEGER,
+    defaultValue: 0,
   })
   status?: number;
 
