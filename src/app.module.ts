@@ -1,10 +1,11 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { MiddlewareConsumer, Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MasterModule } from './config/master.module';
 import { SeedModule } from './seed/Seed.module';
 import { RoleSeederService } from './seed/Role/services';
 import { ProjectUnitSeederService } from './seed/Project_Unit/services';
+import { VerifyMiddleware } from './middleware/checktoken.middleware';
 
 @Module({
   imports: [MasterModule, SeedModule],
@@ -20,5 +21,8 @@ export class AppModule implements OnModuleInit {
   async onModuleInit() {
     await this.roleSeederService.seedRoles();
     await this.ProjectUnitService.seed();
+  }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(VerifyMiddleware).forRoutes('project');
   }
 }
