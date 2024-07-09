@@ -15,3 +15,12 @@ export interface IProject extends IDefault {
   projectUnitId?: number;
   logs?: IProjectLog[];
 }
+
+export interface IProjectTable {
+  id: number;
+  name: string;
+  planCount?: number;
+  taskCount?: number;
+  progress?: number;
+  memberCount?: number;
+}

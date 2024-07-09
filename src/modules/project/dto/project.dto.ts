@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { PROJECT_UNIT_ENUM } from 'src/enum/project.unit.enum';
 
 export class CreateProjectDto {
   @IsString()

@@ -16,6 +16,8 @@ import { ENUM_Role } from 'src/enum/role.enum';
 import { AddMemberDto } from '../member/dto/member.dto';
 import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
 import { MemberService } from '../member/member.service';
+import { STATUS_ENUM } from 'src/enum/status.enum';
+import { IProjectTable } from 'src/interface/models/project.model';
 
 @Controller('/project')
 export class ProjectController {
@@ -26,8 +28,17 @@ export class ProjectController {
   ) {}
 
   @Get()
-  async getProject(): Promise<Project[]> {
-    return await this.projectService.getProject();
+  async getProject(@Req() request: Request): Promise<IProjectTable[]> {
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    const members = await this.memberService.getMemberByUserId(user.id);
+    const project = await this.projectService.getProject(
+      members
+        .filter((e) => e.status == MEMBER_STATUS_ENUM.ACTIVE)
+        .map((e) => e.projectId),
+      user.id,
+    );
+    return project;
   }
 
   @Get('/:id')

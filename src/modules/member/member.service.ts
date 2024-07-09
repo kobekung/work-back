@@ -31,8 +31,10 @@ export class MemberService {
     return member;
   }
 
-  async getMemberById(id: number): Promise<Member> {
-    return await this.repository.findByPk(id);
+  async getMemberByUserId(id: number): Promise<Member[]> {
+    return await this.repository.findAll({
+      where: { userId: id },
+    });
   }
 
   async createMember(member: AddMemberDto) {
