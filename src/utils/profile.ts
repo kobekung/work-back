@@ -42,3 +42,16 @@ export const getUnit = async (token: string) => {
     throw new HttpException(err.response.data, err.response.status);
   }
 };
+
+export const verifyToken = async (token: string) => {
+  try {
+    const verify = await axios.post(process.env.LDAP_VERIFY, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    return verify.data;
+  } catch (err) {
+    throw new HttpException(err.response.data, err.response.status);
+  }
+};
