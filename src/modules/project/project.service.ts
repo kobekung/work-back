@@ -4,6 +4,7 @@ import { Project } from 'src/models/project.model';
 import { CreateProjectDto } from './dto/project.dto';
 import { IProjectTable } from 'src/interface/models/project.model';
 import { MemberService } from '../member/member.service';
+import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
 
 @Injectable()
 export class ProjectService {
@@ -12,30 +13,36 @@ export class ProjectService {
     private readonly memberService: MemberService,
   ) {}
 
-  async getProject(projectId: number[], userId): Promise<IProjectTable[]> {
-    if (projectId.length > 0) {
-      const projects = await this.repository.findAll({
-        where: { id: projectId },
-      });
-      //to ProjectTable
-      const projectTablePromises = await projects.map(async (e) => {
-        const memberCount = await this.memberService.getMemberByProjectID(
+  async getProject(userId): Promise<IProjectTable[]> {
+    const projects = await this.repository.findAll({
+      include: [
+        {
+          association: 'members', // This should match the association name defined in your model
+          where: {
+            userId: userId,
+            status: MEMBER_STATUS_ENUM.ACTIVE,
+          },
+        },
+      ],
+    });
+    //to ProjectTable
+    const projectTablePromises = await projects.map(async (e) => {
+      const memberCount =
+        await this.memberService.countMemberByProjectIdForTableProject(
           userId,
           e.id,
         );
-        return {
-          id: e.id,
-          name: e.name,
-          process: 100,
-          planCount: 2,
-          taskCount: 5,
-          memberCount: memberCount.length,
-        };
-      });
-      const projectTable = await Promise.all(projectTablePromises);
-      return projectTable;
-    }
-    return [];
+      return {
+        id: e.id,
+        name: e.name,
+        progress: Math.floor(Math.random() * 101),
+        planCount: Math.floor(Math.random() * 3),
+        taskCount: Math.floor(Math.random() * 6),
+        memberCount: memberCount,
+      };
+    });
+    const projectTable = await Promise.all(projectTablePromises);
+    return projectTable;
   }
 
   async getProjectById(id: number): Promise<Project> {

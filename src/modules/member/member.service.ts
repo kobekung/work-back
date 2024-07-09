@@ -18,9 +18,13 @@ export class MemberService {
     if (!permission) {
       throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
     }
+    //status != 3
     const member = await this.repository.findAll({
       where: {
         projectId: projectId,
+        [Op.not]: {
+          status: MEMBER_STATUS_ENUM.DENY,
+        },
       },
       include: [
         {
@@ -75,6 +79,29 @@ export class MemberService {
       await t.rollback();
       throw new Error(err);
     }
+  }
+
+  async countMemberByProjectIdForTableProject(
+    projectId: number,
+    userId: number,
+  ): Promise<number> {
+    const permission = await this.checkpermission({ userId, projectId });
+    if (!permission) {
+      throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
+    }
+    //status != 3
+    const member = await this.repository.count({
+      where: {
+        projectId: projectId,
+        status: MEMBER_STATUS_ENUM.ACTIVE,
+      },
+      include: [
+        {
+          all: true,
+        },
+      ],
+    });
+    return member;
   }
 
   async checkpermission({

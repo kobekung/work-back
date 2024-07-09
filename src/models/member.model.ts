@@ -10,6 +10,7 @@ import { IMember } from 'src/interface/models/member.model';
 import { Role } from './role.model';
 import { Project } from './project.model';
 import { User } from './user.model';
+import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
 
 @Table({
   paranoid: true,
@@ -54,7 +55,7 @@ export class Member extends Model<Member | IMember> implements IMember {
   @Column({
     allowNull: true,
     type: DataType.INTEGER,
-    defaultValue: 0,
+    defaultValue: MEMBER_STATUS_ENUM.PENDING,
   })
   status?: number;
 

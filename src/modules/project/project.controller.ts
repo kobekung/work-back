@@ -31,13 +31,8 @@ export class ProjectController {
   async getProject(@Req() request: Request): Promise<IProjectTable[]> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
-    const members = await this.memberService.getMemberByUserId(user.id);
-    const project = await this.projectService.getProject(
-      members
-        .filter((e) => e.status == MEMBER_STATUS_ENUM.ACTIVE)
-        .map((e) => e.projectId),
-      user.id,
-    );
+    // const members = await this.memberService.getMemberByUserId(user.id);
+    const project = await this.projectService.getProject(user.id);
     return project;
   }
 
