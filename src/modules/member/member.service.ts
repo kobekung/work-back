@@ -1,10 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Member } from 'src/models/member.model';
-import { AddMemberDto } from './dto/member.dto';
+import {
+  AddMemberDto,
+  UpdateMemberDto,
+  UpdateMemberStatusDto,
+} from './dto/member.dto';
 import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
 import { ENUM_Role } from 'src/enum/role.enum';
 import { Op } from 'sequelize';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class MemberService {
@@ -14,7 +19,10 @@ export class MemberService {
     projectId: number,
     userId: number,
   ): Promise<Member[]> {
-    const permission = await this.checkpermission({ userId, projectId });
+    const permission = await this.checkpermissionForProject({
+      userId,
+      projectId,
+    });
     if (!permission) {
       throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
     }
@@ -35,35 +43,78 @@ export class MemberService {
     return member;
   }
 
-  async getMemberByUserId(id: number): Promise<Member[]> {
+  async getMemberByUserId(
+    id: number,
+    status: MEMBER_STATUS_ENUM,
+  ): Promise<Member[]> {
+    if (status) {
+      return await this.repository.findAll({
+        include: [{ all: true }],
+        where: { userId: id, status },
+      });
+    }
     return await this.repository.findAll({
+      include: [{ all: true }],
       where: { userId: id },
     });
   }
 
-  async createMember(member: AddMemberDto) {
+  async createMember(member: AddMemberDto): Promise<Member> {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.create(member, {
+      const memberCreated = await this.repository.create(member, {
         transaction: t,
       });
       await t.commit();
-      return 'Add Member Successfully';
+      return memberCreated;
     } catch (err) {
       await t.rollback();
       throw new Error(err);
     }
   }
 
-  async updateMember(id: number, member: AddMemberDto) {
+  async updateMember(
+    userId: number,
+    member: UpdateMemberDto,
+  ): Promise<[affectedCount: number]> {
     const t = await this.repository.sequelize.transaction();
     try {
-      await this.repository.update(member, { where: { id } });
+      const permission = await this.checkpermissionForProject({
+        userId: userId,
+        projectId: member.projectId,
+        isUpdate: true,
+      });
+      if (!permission) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+      const memberUpdated = await this.repository.update(member, {
+        where: { id: member.id },
+        transaction: t,
+      });
       await t.commit();
-      return 'Project Updated Successfully';
+      return memberUpdated;
     } catch (err) {
       await t.rollback();
-      throw new Error(err);
+      throw new HttpException(err.response, err.status);
+    }
+  }
+
+  async updateMemberStatus({ id, status, userId }: UpdateMemberStatusDto) {
+    const t = await this.repository.sequelize.transaction();
+    try {
+      const permission = await this.checkpermissionUpdates({ id, userId });
+      if (!permission) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+      const member = await this.repository.update(
+        { status },
+        { where: { id }, transaction: t },
+      );
+      await t.commit();
+      return member;
+    } catch (err) {
+      await t.rollback();
+      throw new HttpException(err.response, err.status);
     }
   }
 
@@ -77,7 +128,7 @@ export class MemberService {
       return 'Project Deleted Successfully';
     } catch (err) {
       await t.rollback();
-      throw new Error(err);
+      throw new HttpException(err.response, err.status);
     }
   }
 
@@ -85,7 +136,10 @@ export class MemberService {
     projectId: number,
     userId: number,
   ): Promise<number> {
-    const permission = await this.checkpermission({ userId, projectId });
+    const permission = await this.checkpermissionForProject({
+      userId,
+      projectId,
+    });
     if (!permission) {
       throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
     }
@@ -104,7 +158,7 @@ export class MemberService {
     return member;
   }
 
-  async checkpermission({
+  async checkpermissionForProject({
     userId,
     projectId,
     isUpdate = false,
@@ -130,4 +184,51 @@ export class MemberService {
 
     return !!permission;
   }
+
+  checkpermissionUpdates = async ({
+    id,
+    userId,
+    updateRole = false,
+  }: {
+    id: number;
+    userId: number;
+    updateRole?: boolean;
+  }) => {
+    if (updateRole) {
+      const member = await this.repository.findOne({
+        where: {
+          id,
+          userId,
+          status: MEMBER_STATUS_ENUM.ACTIVE,
+          [Op.or]: [{ roleId: ENUM_Role.Owner }, { roleId: ENUM_Role.PM }],
+        },
+      });
+      return !!member;
+    }
+    const member = await this.repository.findOne({
+      where: {
+        id,
+        userId,
+        status: MEMBER_STATUS_ENUM.PENDING,
+      },
+    });
+    return !!member;
+  };
+
+  checkpermissionDelete = async ({
+    id,
+    senderId,
+  }: {
+    id: number;
+    senderId: number;
+  }) => {
+    const member = await this.repository.findOne({
+      where: {
+        id,
+        senderId,
+        status: MEMBER_STATUS_ENUM.ACTIVE,
+      },
+    });
+    return !!member;
+  };
 }

@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
 
 export class AddMemberDto {
   @IsNumber()
@@ -10,7 +11,7 @@ export class AddMemberDto {
   userId: number;
 
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty()
   roleId?: number;
 
   @IsNumber()
@@ -20,4 +21,32 @@ export class AddMemberDto {
   @IsNumber()
   @IsOptional()
   senderId?: number;
+}
+
+export class UpdateMemberDto {
+  @IsNumber()
+  @IsNotEmpty()
+  id: number;
+
+  @IsNumber()
+  @IsOptional()
+  roleId?: number;
+
+  @IsNumber()
+  @IsOptional()
+  projectId?: number;
+}
+
+export class UpdateMemberStatusDto {
+  @IsNumber()
+  @IsNotEmpty()
+  id: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  userId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  status: MEMBER_STATUS_ENUM;
 }
