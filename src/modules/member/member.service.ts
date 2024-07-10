@@ -119,7 +119,7 @@ export class MemberService {
       status: MEMBER_STATUS_ENUM.ACTIVE,
     };
 
-    if (!isUpdate) {
+    if (isUpdate) {
       whereClause.roleId = {
         [Op.or]: [ENUM_Role.Owner],
       };
