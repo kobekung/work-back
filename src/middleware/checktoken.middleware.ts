@@ -10,10 +10,10 @@ export class VerifyMiddleware implements NestMiddleware {
     if (!token) {
       res.status(401).send('Unauthorized');
     }
-    // const verify = await verifyToken(token);
-    // if (!verify) {
-    //   res.status(401).send('Unauthorized');
-    // }
+    const verify = await verifyToken(token);
+    if (!verify) {
+      res.status(401).send('Unauthorized');
+    }
     next();
   }
 }

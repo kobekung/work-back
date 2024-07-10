@@ -45,7 +45,7 @@ export const getUnit = async (token: string) => {
 
 export const verifyToken = async (token: string) => {
   try {
-    const verify = await axios.post(process.env.LDAP_VERIFY, {
+    const verify = await axios.post(process.env.LDAP_VERIFY, null, {
       headers: {
         Authorization: token,
       },
