@@ -29,8 +29,8 @@ export class ProjectService {
     const projectTablePromises = await projects.map(async (e) => {
       const memberCount =
         await this.memberService.countMemberByProjectIdForTableProject(
-          userId,
           e.id,
+          userId,
         );
       return {
         id: e.id,
