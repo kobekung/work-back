@@ -50,6 +50,10 @@ export class User extends Model<User | IUser> implements IUser {
   })
   refreshToken?: string;
 
-  
+  @Column({
+    allowNull: true,
+    type: DataType.STRING,
+  })
+  socketId?: string;
 }
 
