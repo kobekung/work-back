@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
@@ -16,8 +17,11 @@ import { ENUM_Role } from 'src/enum/role.enum';
 import { AddMemberDto } from '../member/dto/member.dto';
 import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
 import { MemberService } from '../member/member.service';
-import { STATUS_ENUM } from 'src/enum/status.enum';
 import { IProjectTable } from 'src/interface/models/project.model';
+import {
+  IPagination,
+  IReqPagination,
+} from 'src/interface/pagination.interface';
 
 @Controller('/project')
 export class ProjectController {
@@ -28,10 +32,16 @@ export class ProjectController {
   ) {}
 
   @Get()
-  async getProject(@Req() request: Request): Promise<IProjectTable[]> {
+  async getProject(
+    @Req() request: Request,
+    @Query() pagination: IReqPagination,
+  ): Promise<IPagination<IProjectTable>> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
-    const project = await this.projectService.getProject(user.id);
+    const project = await this.projectService.getProject({
+      userId: user.id,
+      pagination: pagination,
+    });
     return project;
   }
 

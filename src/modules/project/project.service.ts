@@ -5,6 +5,10 @@ import { CreateProjectDto } from './dto/project.dto';
 import { IProjectTable } from 'src/interface/models/project.model';
 import { MemberService } from '../member/member.service';
 import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
+import {
+  IPagination,
+  IReqPagination,
+} from 'src/interface/pagination.interface';
 
 @Injectable()
 export class ProjectService {
@@ -13,11 +17,31 @@ export class ProjectService {
     private readonly memberService: MemberService,
   ) {}
 
-  async getProject(userId): Promise<IProjectTable[]> {
+  async getProject({
+    userId,
+    pagination,
+  }: {
+    userId: number;
+    pagination: IReqPagination;
+  }): Promise<IPagination<IProjectTable>> {
     const projects = await this.repository.findAll({
       include: [
         {
           association: 'members', // This should match the association name defined in your model
+          where: {
+            userId: userId,
+            status: MEMBER_STATUS_ENUM.ACTIVE,
+          },
+        },
+      ],
+      offset: pagination.page - 1,
+      limit: pagination.limit,
+    });
+
+    const projectCount = await this.repository.count({
+      include: [
+        {
+          association: 'members',
           where: {
             userId: userId,
             status: MEMBER_STATUS_ENUM.ACTIVE,
@@ -42,7 +66,13 @@ export class ProjectService {
       };
     });
     const projectTable = await Promise.all(projectTablePromises);
-    return projectTable;
+    return {
+      data: projectTable,
+      page: pagination.page,
+      limit: pagination.limit,
+      totalPage: Math.ceil(projectCount / pagination.limit),
+      totalRow: projectCount,
+    };
   }
 
   async getProjectById(id: number): Promise<Project> {
