@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsDate,
   IsNotEmpty,
@@ -24,12 +24,13 @@ export class CreateProjectDto {
 
   @IsNumber()
   @IsOptional()
-  @Type(() => Number)
+  @Transform(({ value }) => parseInt(value))
   type?: number;
 
   @IsString()
   @IsOptional()
-  unit?: string;
+  @Transform(({ value }) => parseInt(value))
+  unit?: number;
 
   @IsNumber()
   @IsOptional()
@@ -43,10 +44,11 @@ export class CreateProjectDto {
 
   @IsNumber()
   @IsOptional()
-  @Type(() => Number)
+  @Transform(({ value }) => parseInt(value))
   ownerUnitId?: number;
 
   @IsNumber()
   @IsOptional()
+  @Transform(({ value }) => parseInt(value))
   projectUnitId?: number;
 }
