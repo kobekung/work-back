@@ -14,7 +14,6 @@ export class UserController {
   @Get()
   async getUserByToken(@Req() request: Request) {
     const token = request.headers['authorization'] as string;
-    console.log(token);
     return this.userService.getUserByToken(token);
   }
 

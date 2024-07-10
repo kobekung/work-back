@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsDate,
   IsNotEmpty,
@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { PROJECT_UNIT_ENUM } from 'src/enum/project.unit.enum';
 
 export class CreateProjectDto {
   @IsString()
@@ -25,12 +24,13 @@ export class CreateProjectDto {
 
   @IsNumber()
   @IsOptional()
-  @Type(() => Number)
+  @Transform(({ value }) => parseInt(value))
   type?: number;
 
   @IsString()
   @IsOptional()
-  unit?: string;
+  @Transform(({ value }) => parseInt(value))
+  unit?: number;
 
   @IsNumber()
   @IsOptional()
@@ -44,10 +44,11 @@ export class CreateProjectDto {
 
   @IsNumber()
   @IsOptional()
-  @Type(() => Number)
+  @Transform(({ value }) => parseInt(value))
   ownerUnitId?: number;
 
   @IsNumber()
   @IsOptional()
-  projectUnit?: number;
+  @Transform(({ value }) => parseInt(value))
+  projectUnitId?: number;
 }

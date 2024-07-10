@@ -6,10 +6,10 @@ dotenv.config();
 
 export const getProfile = async (token: string) => {
   try {
-    const profile = await axios.get(process.env.LDAP_PROFILE,{
-        headers: {
-            Authorization: token,
-        },
+    const profile = await axios.get(process.env.LDAP_PROFILE, {
+      headers: {
+        Authorization: token,
+      },
     });
     return profile.data;
   } catch (err) {
@@ -26,6 +26,31 @@ export const refreshToken = async (refreshToken: string) => {
       },
     });
     return token.data;
+  } catch (err) {
+    throw new HttpException(err.response.data, err.response.status);
+  }
+};
+export const getUnit = async (token: string) => {
+  try {
+    const unit = await axios.get(process.env.LDAP_UNIT, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    return unit.data;
+  } catch (err) {
+    throw new HttpException(err.response.data, err.response.status);
+  }
+};
+
+export const verifyToken = async (token: string) => {
+  try {
+    const verify = await axios.post(process.env.LDAP_VERIFY, null, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    return verify.data;
   } catch (err) {
     throw new HttpException(err.response.data, err.response.status);
   }
