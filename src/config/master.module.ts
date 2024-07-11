@@ -32,7 +32,7 @@ dotenv.config();
       database: process.env.DATABASE,
       autoLoadModels: true,
       synchronize: true,
-      models: [User, Project, Role, Member, ProjectLog, ProjectUnit],
+      models: [User, Role, Member, ProjectLog, Project, ProjectUnit],
     }),
     UserModule,
     ProjectModule,
@@ -40,7 +40,7 @@ dotenv.config();
     MemberModule,
     UnitModule,
     ProjectUnitModule,
-    GatewayModule
+    GatewayModule,
   ],
 })
 export class MasterModule {}

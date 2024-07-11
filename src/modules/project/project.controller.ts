@@ -15,7 +15,10 @@ import { Project } from 'src/models/project.model';
 import { UserService } from '../user/services/user.service';
 import { ENUM_Role } from 'src/enum/role.enum';
 import { AddMemberDto } from '../member/dto/member.dto';
-import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
+import {
+  MEMBER_PERISSION_ENUM,
+  MEMBER_STATUS_ENUM,
+} from 'src/enum/member.status';
 import { MemberService } from '../member/member.service';
 import { IProjectTable } from 'src/interface/models/project.model';
 import {
@@ -64,7 +67,10 @@ export class ProjectController {
       roleId: ENUM_Role.Owner,
       status: MEMBER_STATUS_ENUM.ACTIVE,
     } as AddMemberDto;
-    await this.memberService.createMember(memberDetails);
+    await this.memberService.createMember(
+      memberDetails,
+      MEMBER_PERISSION_ENUM.IS_CREATE,
+    );
     return projectCreated;
   }
 

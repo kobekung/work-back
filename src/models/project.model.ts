@@ -1,4 +1,12 @@
-import { Table, Model, Column, DataType, HasMany, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  Column,
+  DataType,
+  HasMany,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { IProject } from 'src/interface/models/project.model';
 import { Member } from './member.model';
 import { ProjectLog } from './project_log.model';
@@ -55,9 +63,9 @@ export class Project extends Model<Project | IProject> implements IProject {
 
   @Column({
     allowNull: true,
-    type: DataType.INTEGER,
+    type: DataType.STRING,
   })
-  ownerUnitId?: number;
+  ownerUnitId?: string;
 
   @ForeignKey(() => ProjectUnit)
   @Column({
@@ -65,7 +73,6 @@ export class Project extends Model<Project | IProject> implements IProject {
     type: DataType.INTEGER,
   })
   projectUnitId?: number;
-
 
   @HasMany(() => Member, {
     onDelete: 'CASCADE',
@@ -78,8 +85,7 @@ export class Project extends Model<Project | IProject> implements IProject {
     onUpdate: 'CASCADE',
   })
   logs?: ProjectLog[];
-  
+
   @BelongsTo(() => ProjectUnit)
   projectUnit?: ProjectUnit;
 }
-

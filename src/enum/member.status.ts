@@ -3,3 +3,10 @@ export enum MEMBER_STATUS_ENUM {
   ACTIVE = 2,
   DENY = 3,
 }
+
+export enum MEMBER_PERISSION_ENUM {
+  IS_UPDATE = 1,
+  IS_DELETE = 2,
+  IS_CREATE = 3,
+  IS_READ = 4,
+}

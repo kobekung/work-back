@@ -17,7 +17,10 @@ import {
 import { MemberService } from './member.service';
 import { Member } from 'src/models/member.model';
 import { UserService } from '../user/services/user.service';
-import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
+import {
+  MEMBER_PERISSION_ENUM,
+  MEMBER_STATUS_ENUM,
+} from 'src/enum/member.status';
 @Controller('/Member')
 export class MemberController {
   constructor(
@@ -46,8 +49,17 @@ export class MemberController {
   }
 
   @Post()
-  async createMember(@Body() member: AddMemberDto): Promise<Member> {
-    return await this.MemberService.createMember(member);
+  async createMember(
+    @Body() member: AddMemberDto,
+    @Req() request: Request,
+  ): Promise<Member> {
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    const payload = { ...member, senderId: user.id };
+    return await this.MemberService.createMember(
+      payload,
+      MEMBER_PERISSION_ENUM.IS_UPDATE,
+    );
   }
 
   @Put('/:id')

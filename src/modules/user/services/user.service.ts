@@ -49,6 +49,7 @@ export class UserService {
       await t.commit();
       return userCreated;
     } catch (err) {
+      console.log(err)
       await t.rollback();
       throw new HttpException(err.response.data, err.response.status);
     }
@@ -56,7 +57,7 @@ export class UserService {
 
   async checkException(idp: string): Promise<User> {
     const user = await this.repository.findOne({ where: { idp } });
-    return user;
+    return user; 
   }
 
   async getUserByToken(token: string): Promise<IUser> {

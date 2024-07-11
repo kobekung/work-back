@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Member } from 'src/models/member.model';
 import {
@@ -6,7 +6,10 @@ import {
   UpdateMemberDto,
   UpdateMemberStatusDto,
 } from './dto/member.dto';
-import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
+import {
+  MEMBER_PERISSION_ENUM,
+  MEMBER_STATUS_ENUM,
+} from 'src/enum/member.status';
 import { ENUM_Role } from 'src/enum/role.enum';
 import { Op } from 'sequelize';
 import { User } from 'src/models/user.model';
@@ -22,6 +25,7 @@ export class MemberService {
     const permission = await this.checkpermissionForProject({
       userId,
       projectId,
+      permissionStatus: MEMBER_PERISSION_ENUM.IS_READ,
     });
     if (!permission) {
       throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
@@ -59,9 +63,17 @@ export class MemberService {
     });
   }
 
-  async createMember(member: AddMemberDto): Promise<Member> {
+  async createMember(
+    member: AddMemberDto,
+    permissionStatus: MEMBER_PERISSION_ENUM,
+  ): Promise<Member> {
     const t = await this.repository.sequelize.transaction();
     try {
+      const permission = await this.checkpermissionForProject({
+        userId: member.userId,
+        projectId: member.projectId,
+        permissionStatus: permissionStatus,
+      });
       const memberCreated = await this.repository.create(member, {
         transaction: t,
       });
@@ -82,7 +94,7 @@ export class MemberService {
       const permission = await this.checkpermissionForProject({
         userId: userId,
         projectId: member.projectId,
-        isUpdate: true,
+        permissionStatus: MEMBER_PERISSION_ENUM.IS_UPDATE,
       });
       if (!permission) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
@@ -139,6 +151,7 @@ export class MemberService {
     const permission = await this.checkpermissionForProject({
       userId,
       projectId,
+      permissionStatus: MEMBER_PERISSION_ENUM.IS_READ,
     });
     if (!permission) {
       throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
@@ -161,11 +174,11 @@ export class MemberService {
   async checkpermissionForProject({
     userId,
     projectId,
-    isUpdate = false,
+    permissionStatus,
   }: {
     userId: number;
     projectId: number;
-    isUpdate?: boolean;
+    permissionStatus: MEMBER_PERISSION_ENUM;
   }): Promise<boolean> {
     let whereClause: any = {
       userId: userId,
@@ -173,7 +186,7 @@ export class MemberService {
       status: MEMBER_STATUS_ENUM.ACTIVE,
     };
 
-    if (isUpdate) {
+    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_UPDATE) {
       whereClause.roleId = {
         [Op.or]: [ENUM_Role.Owner],
       };

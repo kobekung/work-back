@@ -42,12 +42,10 @@ export class CreateProjectDto {
   @Type(() => Number)
   budgetYear?: number;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  @Transform(({ value }) => parseInt(value))
-  ownerUnitId?: number;
+  ownerUnitId?: string;
 
-  @IsNumber()
   @IsOptional()
   @Transform(({ value }) => parseInt(value))
   projectUnitId?: number;
