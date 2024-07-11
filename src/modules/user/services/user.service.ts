@@ -4,8 +4,12 @@ import { LoginDto } from '../dto/user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
-import { getProfile, refreshToken } from 'src/utils/profile';
-import { ILdapRefreshTokenResponse, ILdapResponse, IProfile } from 'src/interface/ldap.interface';
+import { getByIdp, getProfile, refreshToken } from 'src/utils/profile';
+import {
+  ILdapRefreshTokenResponse,
+  ILdapResponse,
+  IProfile,
+} from 'src/interface/ldap.interface';
 import { IUser } from 'src/interface/models/user.model';
 
 dotenv.config();
@@ -49,7 +53,7 @@ export class UserService {
       await t.commit();
       return userCreated;
     } catch (err) {
-      console.log(err)
+      console.log(err);
       await t.rollback();
       throw new HttpException(err.response.data, err.response.status);
     }
@@ -57,7 +61,7 @@ export class UserService {
 
   async checkException(idp: string): Promise<User> {
     const user = await this.repository.findOne({ where: { idp } });
-    return user; 
+    return user;
   }
 
   async getUserByToken(token: string): Promise<IUser> {
@@ -89,7 +93,10 @@ export class UserService {
       }
       const loginToLdap: ILdapRefreshTokenResponse = await refreshToken(token);
       await this.repository.update(
-        { token: loginToLdap.accessToken, refreshToken: loginToLdap.refreshToken },
+        {
+          token: loginToLdap.accessToken,
+          refreshToken: loginToLdap.refreshToken,
+        },
         { where: { idp: user.idp }, transaction: t },
       );
       await t.commit();
@@ -98,4 +105,23 @@ export class UserService {
       throw new HttpException(err.response.data, err.response.status);
     }
   }
+
+  getUserByIdp = async (idp: string, token: string): Promise<User> => {
+    const user = await this.repository.findOne({ where: { idp } });
+    if (user) return user;
+
+    const profile = await getByIdp(idp, token);
+    if (!profile) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    const payload = {
+      idp: profile.idp,
+      email: profile.email,
+      firstName: profile.firstnameEng,
+      lastName: profile.lastnameEng,
+    } as IUser;
+
+    const userCreated = await this.repository.create(payload);
+    return userCreated;
+  };
 }

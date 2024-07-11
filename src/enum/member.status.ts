@@ -9,4 +9,5 @@ export enum MEMBER_PERISSION_ENUM {
   IS_DELETE = 2,
   IS_CREATE = 3,
   IS_READ = 4,
+  IS_OWNER = 5,
 }

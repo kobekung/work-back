@@ -55,3 +55,16 @@ export const verifyToken = async (token: string) => {
     throw new HttpException(err.response.data, err.response.status);
   }
 };
+
+export const getByIdp = async (idp: string, token) => {
+  try {
+    const user = await axios.get(process.env.LDAP_IDP + '/' + idp, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    return user.data;
+  } catch (err) {
+    throw new HttpException(err.response.data, err.response.status);
+  }
+};

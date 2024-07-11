@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import {
   AddMemberDto,
+  AddMemberRequestDto,
   UpdateMemberDto,
   UpdateMemberStatusDto,
 } from './dto/member.dto';
@@ -50,12 +51,19 @@ export class MemberController {
 
   @Post()
   async createMember(
-    @Body() member: AddMemberDto,
+    @Body() member: AddMemberRequestDto,
     @Req() request: Request,
   ): Promise<Member> {
     const token = request.headers['authorization'] as string;
-    const user = await this.userService.getUserByToken(token);
-    const payload = { ...member, senderId: user.id };
+    const sender = await this.userService.getUserByToken(token);
+    const user = await this.userService.getUserByIdp(member.idp, token);
+    const payload = {
+      userId: user.id,
+      senderId: sender.id,
+      roleId: member.roleId,
+      projectId: member.projectId,
+      status: MEMBER_STATUS_ENUM.PENDING,
+    } as AddMemberDto;
     return await this.MemberService.createMember(
       payload,
       MEMBER_PERISSION_ENUM.IS_UPDATE,
@@ -66,8 +74,11 @@ export class MemberController {
   async updateProject(
     @Param('id') id: number,
     @Body() member: UpdateMemberDto,
+    @Req() request: Request,
   ): Promise<[affectedCount: number]> {
-    return await this.MemberService.updateMember(id, member);
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    return await this.MemberService.updateMember(user.id, member);
   }
 
   @Put('updateStatus/:id')

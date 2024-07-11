@@ -69,7 +69,7 @@ export class ProjectController {
     } as AddMemberDto;
     await this.memberService.createMember(
       memberDetails,
-      MEMBER_PERISSION_ENUM.IS_CREATE,
+      MEMBER_PERISSION_ENUM.IS_OWNER,
     );
     return projectCreated;
   }

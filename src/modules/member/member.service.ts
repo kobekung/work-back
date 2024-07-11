@@ -38,6 +38,7 @@ export class MemberService {
           status: MEMBER_STATUS_ENUM.DENY,
         },
       },
+      order: [['id', 'ASC']],
       include: [
         {
           all: true,
@@ -70,10 +71,13 @@ export class MemberService {
     const t = await this.repository.sequelize.transaction();
     try {
       const permission = await this.checkpermissionForProject({
-        userId: member.userId,
+        userId: member.senderId ? member.senderId : member.userId,
         projectId: member.projectId,
         permissionStatus: permissionStatus,
       });
+      if (!permission) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
       const memberCreated = await this.repository.create(member, {
         transaction: t,
       });
@@ -81,7 +85,7 @@ export class MemberService {
       return memberCreated;
     } catch (err) {
       await t.rollback();
-      throw new Error(err);
+      throw new HttpException(err.response, err.status);
     }
   }
 
@@ -191,6 +195,11 @@ export class MemberService {
         [Op.or]: [ENUM_Role.Owner],
       };
     }
+
+    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_OWNER) {
+      whereClause = {};
+    }
+
     const permission = await this.repository.findOne({
       where: whereClause,
     });
