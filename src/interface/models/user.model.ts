@@ -8,4 +8,5 @@ export interface IUser extends IDefault {
     email: string;
     token?: string;
     refreshToken?: string;
+    socketId?: string;
 }
