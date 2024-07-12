@@ -197,7 +197,7 @@ export class MemberService {
     }
 
     if (permissionStatus == MEMBER_PERISSION_ENUM.IS_OWNER) {
-      whereClause = {};
+      return true;
     }
 
     const permission = await this.repository.findOne({
