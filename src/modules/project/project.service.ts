@@ -1,19 +1,26 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Project } from 'src/models/project.model';
 import { CreateProjectDto } from './dto/project.dto';
 import { IProjectTable } from 'src/interface/models/project.model';
 import { MemberService } from '../member/member.service';
-import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
+import {
+  MEMBER_PERISSION_ENUM,
+  MEMBER_STATUS_ENUM,
+} from 'src/enum/member.status';
 import {
   IPagination,
   IReqPagination,
 } from 'src/interface/pagination.interface';
+import { Op } from 'sequelize';
+import { ENUM_Role } from 'src/enum/role.enum';
+import { Member } from 'src/models/member.model';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectModel(Project) private repository: typeof Project,
+    @InjectModel(Member) private Memberrepository: typeof Member,
     private readonly memberService: MemberService,
   ) {}
 
@@ -112,7 +119,24 @@ export class ProjectService {
     }
   }
 
-  async deleteProject(id: number): Promise<number> {
+  async deleteProject(
+    id: number,
+    userId: number,
+    name: string,
+  ): Promise<number> {
+    const permission = await this.checkpermissionDelete({
+      userId: userId,
+      projectId: id,
+      permissionStatus: MEMBER_PERISSION_ENUM.IS_READ,
+      name,
+    });
+    if (!permission) {
+      throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
+    }
+    // const getProjectName = await this.getProjectById(id);
+    // if (getProjectName.name !== name) {
+    //   throw new HttpException('ชื่อโปรเจคผิด', HttpStatus.FORBIDDEN);
+    // }
     const t = await this.repository.sequelize.transaction();
     try {
       const projectDeleted = await this.repository.destroy({
@@ -120,10 +144,50 @@ export class ProjectService {
         transaction: t,
       });
       await t.commit();
+
       return projectDeleted;
     } catch (err) {
       await t.rollback();
       throw new Error(err);
     }
+  }
+
+  async checkpermissionDelete({
+    userId,
+    projectId,
+    permissionStatus,
+    name,
+  }: {
+    userId: number;
+    projectId: number;
+    permissionStatus: MEMBER_PERISSION_ENUM;
+    name: string;
+  }): Promise<boolean> {
+    let whereClause: any = {
+      userId: userId,
+      projectId: projectId,
+      status: MEMBER_STATUS_ENUM.ACTIVE,
+    };
+
+    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_UPDATE) {
+      whereClause.roleId = {
+        [Op.or]: [{ roleId: ENUM_Role.Owner }, { roleId: ENUM_Role.PM }],
+      };
+    }
+
+    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_OWNER) {
+      whereClause = {};
+    }
+    const getProjectName = await this.getProjectById(projectId);
+    console.log(getProjectName)
+    console.log(name)
+    if (getProjectName.name !== name) {
+      throw new HttpException('ชื่อโปรเจคผิด', HttpStatus.FORBIDDEN);
+    }
+    const permission = await this.Memberrepository.findOne({
+      where: whereClause,
+    });
+
+    return Boolean(permission);
   }
 }
