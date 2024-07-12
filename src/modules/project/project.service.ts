@@ -179,8 +179,6 @@ export class ProjectService {
       whereClause = {};
     }
     const getProjectName = await this.getProjectById(projectId);
-    console.log(getProjectName)
-    console.log(name)
     if (getProjectName.name !== name) {
       throw new HttpException('ชื่อโปรเจคผิด', HttpStatus.FORBIDDEN);
     }
