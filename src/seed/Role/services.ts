@@ -28,6 +28,18 @@ export class RoleSeederService {
         isEditProject: false,
         isEditPlan: false,
       },
+      {
+        name: ENUM_RoleName.PM,
+        isEditTask: true,
+        isEditProject: true,
+        isEditPlan: true,
+      },
+      {
+        name: ENUM_RoleName.VIEWER,
+        isEditTask: false,
+        isEditProject: false,
+        isEditPlan: false,
+      },
       // Add more roles as needed
     ] as IRole[];
 
