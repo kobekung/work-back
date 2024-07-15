@@ -83,7 +83,9 @@ export class ProjectController {
   }
 
   @Delete('/:id')
-  async deleteProject(@Param('id') id: number): Promise<number> {
-    return await this.projectService.deleteProject(id);
+  async deleteProject(@Param('id') id: number , @Req() request: Request, @Body('name') name: string,): Promise<number> {
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    return await this.projectService.deleteProject(id , user.id , name);
   }
 }
