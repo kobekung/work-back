@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from 'src/models/role.model';
 import { RoleDto } from './dto/role.dto';
+import { Member } from 'src/models/member.model';
 
 @Injectable()
 export class RoleService {
@@ -13,6 +14,25 @@ export class RoleService {
 
   async getRoleById(id: number): Promise<Role> {
     return await this.repository.findByPk(id);
+  }
+
+  async getRoleByProjectId(id: number, userId): Promise<Role> {
+    try {
+      const role = await this.repository.findOne({
+        include: [
+          {
+            model: Member,
+            where: { projectId: id, userId: 1 },
+          },
+        ],
+      });
+      if (!role) {
+        throw new HttpException('Role not found', 404);
+      }
+      return role;
+    } catch (err) {
+      throw new HttpException(err, err.status);
+    }
   }
 
   async createRole(role: RoleDto): Promise<Role> {
@@ -29,10 +49,16 @@ export class RoleService {
     }
   }
 
-  async updateRole(id: number, role: RoleDto): Promise<[affectedCount: number]> {
+  async updateRole(
+    id: number,
+    role: RoleDto,
+  ): Promise<[affectedCount: number]> {
     const t = await this.repository.sequelize.transaction();
     try {
-      const roleUpdated = await this.repository.update(role, { where: { id }, transaction: t });
+      const roleUpdated = await this.repository.update(role, {
+        where: { id },
+        transaction: t,
+      });
       await t.commit();
       return roleUpdated;
     } catch (err) {

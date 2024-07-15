@@ -6,14 +6,19 @@ import {
   Param,
   Post,
   Put,
+  Req,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { Role } from 'src/models/role.model';
 import { RoleDto } from './dto/role.dto';
+import { UserService } from '../user/services/user.service';
 
 @Controller('/role')
 export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+  constructor(
+    private readonly roleService: RoleService,
+    private readonly userService: UserService,
+  ) {}
 
   @Get()
   async getRole(): Promise<Role[]> {
@@ -23,6 +28,16 @@ export class RoleController {
   @Get('/:id')
   async getRoleById(@Param('id') id: number): Promise<Role> {
     return await this.roleService.getRoleById(id);
+  }
+
+  @Get('project/:id')
+  async getRoleByProjectId(
+    @Param('id') id: number,
+    @Req() request: Request,
+  ): Promise<Role> {
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    return await this.roleService.getRoleByProjectId(id, user.id);
   }
 
   @Post()
