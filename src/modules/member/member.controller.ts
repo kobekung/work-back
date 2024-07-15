@@ -58,6 +58,14 @@ export class MemberController {
     const user = await this.userService.getUserByToken(token);
     return await this.MemberService.getMemberByProjectID(id, user.id);
   }
+  @Get()
+  async getMemberBySenderId(
+    @Req() request: Request,
+  ): Promise<Member[]> {
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    return await this.MemberService.getMemberBySenderId(user.id);
+  }
 
   @Post()
   async createMember(
