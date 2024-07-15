@@ -16,13 +16,13 @@ export class RoleService {
     return await this.repository.findByPk(id);
   }
 
-  async getRoleByProjectId(id: number, userId): Promise<Role> {
+  async getRoleByProjectId(id: number, userId: number): Promise<Role> {
     try {
       const role = await this.repository.findOne({
         include: [
           {
             model: Member,
-            where: { projectId: id, userId: 1 },
+            where: { projectId: id, userId: userId },
           },
         ],
       });

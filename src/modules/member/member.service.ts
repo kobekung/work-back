@@ -13,6 +13,8 @@ import {
 import { ENUM_Role } from 'src/enum/role.enum';
 import { Op } from 'sequelize';
 import { User } from 'src/models/user.model';
+import { IProfile } from 'src/interface/ldap.interface';
+import { getByName } from 'src/utils/profile';
 
 @Injectable()
 export class MemberService {
@@ -64,6 +66,18 @@ export class MemberService {
     });
   }
 
+  async getMemberFromLdapByName(
+    name: string,
+    token: string,
+  ): Promise<IProfile[]> {
+    try {
+      const users = await getByName(name, token);
+      return users;
+    } catch (err) {
+      throw new HttpException(err.response, err.status);
+    }
+  }
+
   async createMember(
     member: AddMemberDto,
     permissionStatus: MEMBER_PERISSION_ENUM,
@@ -77,6 +91,15 @@ export class MemberService {
       });
       if (!permission) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+      const findMember = await this.repository.findOne({
+        where: {
+          userId: member.userId,
+          projectId: member.projectId,
+        },
+      });
+      if (findMember) {
+        throw new HttpException('Member already exists', HttpStatus.CONFLICT);
       }
       const memberCreated = await this.repository.create(member, {
         transaction: t,
@@ -134,14 +157,26 @@ export class MemberService {
     }
   }
 
-  async deleteMember(id: number): Promise<String> {
+  async deleteMember(id: number, userId: number): Promise<String> {
     const t = await this.repository.sequelize.transaction();
     try {
+      const getMember = await this.repository.findByPk(id);
+      if (!getMember) {
+        throw new HttpException('Member not found', HttpStatus.NOT_FOUND);
+      }
+      const permission = await this.checkpermissionForProject({
+        userId: userId,
+        projectId: getMember.projectId,
+        permissionStatus: MEMBER_PERISSION_ENUM.IS_DELETE,
+      });
+      if (!permission) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
       await this.repository.destroy({
         where: { id },
       });
       await t.commit();
-      return 'Project Deleted Successfully';
+      return 'Member Deleted Successfully';
     } catch (err) {
       await t.rollback();
       throw new HttpException(err.response, err.status);
@@ -192,7 +227,13 @@ export class MemberService {
 
     if (permissionStatus == MEMBER_PERISSION_ENUM.IS_UPDATE) {
       whereClause.roleId = {
-        [Op.or]: [ENUM_Role.Owner],
+        [Op.or]: [ENUM_Role.Owner, ENUM_Role.PM],
+      };
+    }
+
+    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_DELETE) {
+      whereClause.roleId = {
+        [Op.or]: [ENUM_Role.Owner, ENUM_Role.PM],
       };
     }
 
@@ -232,23 +273,6 @@ export class MemberService {
         id,
         userId,
         status: MEMBER_STATUS_ENUM.PENDING,
-      },
-    });
-    return !!member;
-  };
-
-  checkpermissionDelete = async ({
-    id,
-    senderId,
-  }: {
-    id: number;
-    senderId: number;
-  }) => {
-    const member = await this.repository.findOne({
-      where: {
-        id,
-        senderId,
-        status: MEMBER_STATUS_ENUM.ACTIVE,
       },
     });
     return !!member;

@@ -68,3 +68,15 @@ export const getByIdp = async (idp: string, token) => {
     throw new HttpException(err.response.data, err.response.status);
   }
 };
+export const getByName = async (name: string, token) => {
+  try {
+    const user = await axios.get(process.env.LDAP_NAME + '?name=' + name, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    return user.data;
+  } catch (err) {
+    throw new HttpException(err.response.data, err.response.status);
+  }
+};
