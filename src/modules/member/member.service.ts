@@ -63,7 +63,14 @@ export class MemberService {
       where: { userId: id },
     });
   }
-
+  async getMemberBySenderId(
+    id: number,
+  ): Promise<Member[]> {
+    return await this.repository.findAll({
+      include: [{ all: true }],
+      where: { senderId: id , status : MEMBER_STATUS_ENUM.PENDING},
+    });
+  }
   async createMember(
     member: AddMemberDto,
     permissionStatus: MEMBER_PERISSION_ENUM,
