@@ -22,6 +22,7 @@ import {
   MEMBER_PERISSION_ENUM,
   MEMBER_STATUS_ENUM,
 } from 'src/enum/member.status';
+import { IProfile } from 'src/interface/ldap.interface';
 @Controller('/Member')
 export class MemberController {
   constructor(
@@ -37,6 +38,24 @@ export class MemberController {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
     return await this.MemberService.getMemberByUserId(user.id, query.status);
+  }
+
+  @Get('name')
+  async getMemberByName(
+    @Req() request: Request,
+    @Query() query: { name: string },
+  ): Promise<IProfile[]> {
+    const token = request.headers['authorization'] as string;
+    return await this.MemberService.getMemberFromLdapByName(query.name, token);
+  }
+
+  @Get('/senderId')
+  async getMemberBySenderId(
+    @Req() request: Request,
+  ): Promise<Member[]> {
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    return await this.MemberService.getMemberBySenderId(user.id);
   }
 
   @Get('/:id')
@@ -97,7 +116,12 @@ export class MemberController {
   }
 
   @Delete('/:id')
-  async deleteProject(@Param('id') id: number): Promise<String> {
-    return await this.MemberService.deleteMember(id);
+  async deleteProject(
+    @Param('id') id: number,
+    @Req() request: Request,
+  ): Promise<String> {
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    return await this.MemberService.deleteMember(id, user.id);
   }
 }

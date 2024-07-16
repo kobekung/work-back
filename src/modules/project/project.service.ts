@@ -127,7 +127,7 @@ export class ProjectService {
     const permission = await this.checkpermissionDelete({
       userId: userId,
       projectId: id,
-      permissionStatus: MEMBER_PERISSION_ENUM.IS_READ,
+      permissionStatus: MEMBER_PERISSION_ENUM.IS_UPDATE,
       name,
     });
     if (!permission) {
@@ -175,9 +175,12 @@ export class ProjectService {
       };
     }
 
-    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_OWNER) {
-      whereClause = {};
+    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_DELETE) {
+      whereClause.roleId = {
+        [Op.or]: [{ roleId: ENUM_Role.Owner }],
+      };
     }
+
     const getProjectName = await this.getProjectById(projectId);
     if (getProjectName.name !== name) {
       throw new HttpException('ชื่อโปรเจคผิด', HttpStatus.FORBIDDEN);
