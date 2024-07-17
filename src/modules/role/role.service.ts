@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Role } from 'src/models/role.model';
 import { RoleDto } from './dto/role.dto';
 import { Member } from 'src/models/member.model';
+import { Op } from 'sequelize';
+import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
 
 @Injectable()
 export class RoleService {
@@ -22,7 +24,13 @@ export class RoleService {
         include: [
           {
             model: Member,
-            where: { projectId: id, userId: userId },
+            where: {
+              projectId: id,
+              userId: userId,
+              [Op.not]: {
+                status: MEMBER_STATUS_ENUM.DENY,
+              },
+            },
           },
         ],
       });

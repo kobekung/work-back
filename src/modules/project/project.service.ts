@@ -130,6 +130,7 @@ export class ProjectService {
       permissionStatus: MEMBER_PERISSION_ENUM.IS_UPDATE,
       name,
     });
+
     if (!permission) {
       throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
     }
@@ -171,13 +172,13 @@ export class ProjectService {
 
     if (permissionStatus == MEMBER_PERISSION_ENUM.IS_UPDATE) {
       whereClause.roleId = {
-        [Op.or]: [{ roleId: ENUM_Role.Owner }, { roleId: ENUM_Role.PM }],
+        [Op.or]: [ENUM_Role.Owner, ENUM_Role.PM],
       };
     }
 
     if (permissionStatus == MEMBER_PERISSION_ENUM.IS_DELETE) {
       whereClause.roleId = {
-        [Op.or]: [{ roleId: ENUM_Role.Owner }],
+        [Op.or]: [ENUM_Role.Owner],
       };
     }
 

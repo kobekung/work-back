@@ -12,7 +12,6 @@ import {
 } from 'src/enum/member.status';
 import { ENUM_Role } from 'src/enum/role.enum';
 import { Op } from 'sequelize';
-import { User } from 'src/models/user.model';
 import { IProfile } from 'src/interface/ldap.interface';
 import { getByName } from 'src/utils/profile';
 
@@ -78,12 +77,10 @@ export class MemberService {
     }
   }
 
-  async getMemberBySenderId(
-    id: number,
-  ): Promise<Member[]> {
+  async getMemberBySenderId(id: number): Promise<Member[]> {
     return await this.repository.findAll({
       include: [{ all: true }],
-      where: { senderId: id , status : MEMBER_STATUS_ENUM.PENDING},
+      where: { senderId: id, status: MEMBER_STATUS_ENUM.PENDING },
     });
   }
   async createMember(
@@ -104,6 +101,9 @@ export class MemberService {
         where: {
           userId: member.userId,
           projectId: member.projectId,
+          [Op.not]: {
+            status: MEMBER_STATUS_ENUM.DENY,
+          },
         },
       });
       if (findMember) {
