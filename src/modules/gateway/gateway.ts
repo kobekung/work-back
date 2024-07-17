@@ -23,11 +23,11 @@ export class Gateway implements OnModuleInit {
 
   onModuleInit() {
     this.server.on('connection', (socket) => {
-      socket.on('register', async (userId: number) => {
+      socket.on('register', async (userIdp: string) => {
         try {
           await this.repository.update(
             { socketId: socket.id },
-            { where: { id: Number(userId) } },
+            { where: { idp: userIdp } },
           );
         } catch (err) {
           throw new Error(err);
@@ -42,9 +42,8 @@ export class Gateway implements OnModuleInit {
           if (user) {
             await this.repository.update(
               { socketId: null },
-              { where: { id: user.id } },
+              { where: { idp: user.idp } },
             );
-            console.log(`User ${user.id} disconnected`);
           }
         } catch (err) {
           throw new Error(err);
@@ -57,15 +56,17 @@ export class Gateway implements OnModuleInit {
   async handleInviteEvent(
     @MessageBody()
     inviteDetail: {
-      userId: number;
+      userIdp: string;
       projectId: number;
       roleId: number;
     },
   ) {
     try {
-      const receiver = await this.repository.findByPk(
-        Number(inviteDetail.userId),
-      );
+      const receiver = await this.repository.findOne({
+        where: {
+          idp: inviteDetail.userIdp,
+        },
+      });
       if (receiver && receiver.socketId) {
         this.server.to(receiver.socketId).emit('newInvite', inviteDetail);
       }
