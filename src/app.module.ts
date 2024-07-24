@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MasterModule } from './config/master.module';
-import { SeedModule } from './seed/Seed.module';
+import { SeedModule } from './seed/seed.module';
 import { RoleSeederService } from './seed/Role/services';
 import { ProjectUnitSeederService } from './seed/Project_Unit/services';
 import { VerifyMiddleware } from './middleware/checktoken.middleware';
