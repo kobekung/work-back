@@ -9,6 +9,8 @@ services:
       - ./logs:/home/node/app1/pms-v2-service/logs
     container_name: running-pms-v2-service
     restart: always
+    env_file:
+      - .env.prod
 
 networks:
   route_network:
