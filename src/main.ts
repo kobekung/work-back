@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   //allow CORS localhost:5173
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173','https://pmms.rtarf.mi.th/v2'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
