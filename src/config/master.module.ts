@@ -14,6 +14,7 @@ import { ProjectUnit } from 'src/models/project_unit.model';
 import { UnitModule } from 'src/modules/unit/unit.module';
 import { ProjectUnitModule } from 'src/modules/project_unit/project_unit.module';
 import { GatewayModule } from 'src/modules/gateway/gateway.module';
+import { Plan } from 'src/models/plan.model';
 
 dotenv.config();
 @Module({
@@ -32,7 +33,7 @@ dotenv.config();
       database: process.env.DATABASE,
       autoLoadModels: true,
       synchronize: true,
-      models: [User, Role, Member, ProjectLog, Project, ProjectUnit],
+      models: [User, Role, Member, ProjectLog, Project, ProjectUnit, Plan],
     }),
     UserModule,
     ProjectModule,

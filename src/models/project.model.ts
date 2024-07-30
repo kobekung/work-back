@@ -12,6 +12,7 @@ import { Member } from './member.model';
 import { ProjectLog } from './project_log.model';
 import { PROJECT_UNIT_ENUM } from 'src/enum/project.unit.enum';
 import { ProjectUnit } from './project_unit.model';
+import { Plan } from './plan.model';
 
 @Table({
   paranoid: true,
@@ -86,6 +87,12 @@ export class Project extends Model<Project | IProject> implements IProject {
   })
   logs?: ProjectLog[];
 
+  @HasMany(() => Plan, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  plans?: Plan[];
+  
   @BelongsTo(() => ProjectUnit)
   projectUnit?: ProjectUnit;
 }
