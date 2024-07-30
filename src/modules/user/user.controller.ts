@@ -19,7 +19,7 @@ export class UserController {
 
   @Get('/refresh-token')
   async refreshToken(@Req() request: Request) {
-    const token = request.headers['authorization'] as string;
+    const token = request.headers['refreshToken'] as string;
     return this.userService.refreshTokenLdap(token);
   }
 }
