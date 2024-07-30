@@ -11,6 +11,7 @@ import { User } from 'src/models/user.model';
 
 @Injectable()
 @WebSocketGateway({
+  namespace: '/pmsv2-service',
   cors: {
     origin: ['http://localhost:5173'],
   },
