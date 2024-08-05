@@ -31,58 +31,65 @@ export class PlanService {
     userId,
     pagination,
   }: {
-    projectId : string;
+    projectId: string;
     userId: number;
     pagination: IReqPagination;
   }): Promise<IPagination<IProjectTable>> {
-    const plan = await this.Planrepository.findAll({
+    const { page = 1, limit = 10 } = pagination;
+  
+    // Calculate offset for pagination
+    const offset = (page - 1) * limit;
+  
+    // Fetch plans with pagination
+    const plans = await this.Planrepository.findAll({
       include: [
         {
           association: 'members',
           where: {
             projectId,
-            userId: userId,
+            userId,
             status: MEMBER_STATUS_ENUM.ACTIVE,
           },
         },
       ],
-      offset: pagination.page - 1,
-      limit: pagination.limit,
+      offset,
+      limit,
     });
-
+  
+    // Count total plans for pagination
     const planCount = await this.Planrepository.count({
       include: [
         {
           association: 'members',
           where: {
-            userId: userId,
+            projectId,
+            userId,
             status: MEMBER_STATUS_ENUM.ACTIVE,
           },
         },
       ],
     });
-    //to ProjectTable
-    const PlanTablePromises = await plan.map(async (e) => {
-      const memberCount =
-        await this.memberService.countMemberByProjectIdForTableProject(
-          e.id,
-          userId,
-        );
+  
+    // Map and process the plans
+    const planTablePromises = plans.map(async (plan) => {
+      const memberCount = await this.memberService.countMemberByProjectIdForTableProject(plan.id, userId);
       return {
-        id: e.id,
-        name: e.name,
+        id: plan.id,
+        name: plan.name,
         progress: Math.floor(Math.random() * 101),
         planCount: Math.floor(Math.random() * 3),
         taskCount: Math.floor(Math.random() * 6),
         memberCount: memberCount,
       };
     });
-    const planTable = await Promise.all(PlanTablePromises);
+    const planTable = await Promise.all(planTablePromises);
+  
+    // Return paginated results
     return {
       data: planTable,
-      page: pagination.page,
-      limit: pagination.limit,
-      totalPage: Math.ceil(planCount / pagination.limit),
+      page,
+      limit,
+      totalPage: Math.ceil(planCount / limit),
       totalRow: planCount,
     };
   }
