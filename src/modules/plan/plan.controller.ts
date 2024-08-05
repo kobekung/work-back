@@ -38,11 +38,13 @@ export class PlanController {
   @Get()
   async getProject(
     @Req() request: Request,
+    @Param('id') id: string,
     @Query() pagination: IReqPagination,
   ): Promise<IPagination<IProjectTable>> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
     const plan = await this.PlanService.getPlan({
+      projectId : id,
       userId: user.id,
       pagination: pagination,
     });

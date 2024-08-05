@@ -27,9 +27,11 @@ export class PlanService {
   ) {}
 
   async getPlan({
+    projectId,
     userId,
     pagination,
   }: {
+    projectId : string;
     userId: number;
     pagination: IReqPagination;
   }): Promise<IPagination<IProjectTable>> {
@@ -38,6 +40,7 @@ export class PlanService {
         {
           association: 'members',
           where: {
+            projectId,
             userId: userId,
             status: MEMBER_STATUS_ENUM.ACTIVE,
           },
