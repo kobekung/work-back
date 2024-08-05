@@ -9,7 +9,7 @@ import { PlanService } from './plan.service';
 import { Plan } from 'src/models/plan.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Project , Member, Plan]), MemberModule,UserModule  , Plan],
+  imports: [SequelizeModule.forFeature([Project , Member, Plan]), MemberModule,UserModule  , PlanModule],
   controllers: [PlanController],
   providers: [PlanService],
 })
