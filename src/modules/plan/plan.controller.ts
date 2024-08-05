@@ -36,7 +36,7 @@ export class PlanController {
   ) {}
 
   @Get()
-  async getProject(
+  async getPlan(
     @Req() request: Request,
     @Param('id') id: string,
     @Query() pagination: IReqPagination,
@@ -52,12 +52,12 @@ export class PlanController {
   }
 
   @Get('/:id')
-  async getProjectById(@Param('id') id: number): Promise<Plan> {
+  async getPlanById(@Param('id') id: number): Promise<Plan> {
     return await this.PlanService.getPlanById(id);
   }
 
   @Post()
-  async createProject(
+  async createPlan(
     @Body() project: CreatePlanDto,
     @Req() request: Request,
   ): Promise<Plan> {
@@ -78,7 +78,7 @@ export class PlanController {
   }
 
   @Put('/:id')
-  async updateProject(
+  async updatePlan(
     @Param('id') id: number,
     @Body() project: CreatePlanDto,
   ): Promise<[affectedCount: number]> {
@@ -86,7 +86,7 @@ export class PlanController {
   }
 
   @Delete('/:id')
-  async deleteProject(
+  async deletePlan(
     @Param('id') id: number,
     @Req() request: Request,
   ): Promise<number> {
