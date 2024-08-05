@@ -15,6 +15,7 @@ import { UnitModule } from 'src/modules/unit/unit.module';
 import { ProjectUnitModule } from 'src/modules/project_unit/project_unit.module';
 import { GatewayModule } from 'src/modules/gateway/gateway.module';
 import { Plan } from 'src/models/plan.model';
+import { PlanModule } from 'src/modules/plan/plan.module';
 
 dotenv.config();
 @Module({
@@ -42,6 +43,7 @@ dotenv.config();
     UnitModule,
     ProjectUnitModule,
     GatewayModule,
+    PlanModule
   ],
 })
 export class MasterModule {}
