@@ -6,9 +6,10 @@ import { UserModule } from '../user/user.module';
 import { Member } from 'src/models/member.model';
 import { PlanController } from './plan.controller';
 import { PlanService } from './plan.service';
+import { Plan } from 'src/models/plan.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Project , Member]), MemberModule,UserModule  ],
+  imports: [SequelizeModule.forFeature([Project , Member, Plan]), MemberModule,UserModule  , Plan],
   controllers: [PlanController],
   providers: [PlanService],
 })

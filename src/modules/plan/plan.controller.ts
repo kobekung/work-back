@@ -9,7 +9,6 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { Project } from 'src/models/project.model';
 import { UserService } from '../user/services/user.service';
 import { ENUM_Role } from 'src/enum/role.enum';
 import { AddMemberDto } from '../member/dto/member.dto';
@@ -23,7 +22,7 @@ import {
   IPagination,
   IReqPagination,
 } from 'src/interface/pagination.interface';
-import { ProjectService } from '../project/project.service';
+
 import { CreatePlanDto } from './dto/plan.dto';
 import { Plan } from 'src/models/plan.model';
 import { PlanService } from './plan.service';
