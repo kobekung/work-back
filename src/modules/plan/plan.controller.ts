@@ -89,9 +89,10 @@ export class PlanController {
   async deletePlan(
     @Param('id') id: number,
     @Req() request: Request,
+    @Body() planId: number,
   ): Promise<number> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
-    return await this.PlanService.deletePlan(id, user.id);
+    return await this.PlanService.deletePlan(id, user.id , planId);
   }
 }

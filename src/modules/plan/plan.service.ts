@@ -72,34 +72,29 @@ export class PlanService {
     }
   }
 
-  async deletePlan(id: number, userId: number): Promise<number> {
+  async deletePlan(id: number, userId: number, planId: number): Promise<number> {
     const permission = await this.checkpermissionDelete({
-      userId: userId,
+      userId,
       projectId: id,
       permissionStatus: MEMBER_PERISSION_ENUM.IS_UPDATE,
     });
-
     if (!permission) {
       throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
     }
-    // const getProjectName = await this.getProjectById(id);
-    // if (getProjectName.name !== name) {
-    //   throw new HttpException('ชื่อโปรเจคผิด', HttpStatus.FORBIDDEN);
-    // }
     const t = await this.Planrepository.sequelize.transaction();
     try {
       const planDeleted = await this.Planrepository.destroy({
-        where: { id },
+        where: { id: planId },
         transaction: t,
       });
       await t.commit();
-
       return planDeleted;
     } catch (err) {
       await t.rollback();
-      throw new Error(err);
+      throw new Error(err.message);
     }
   }
+  
 
   async checkpermissionDelete({
     userId,
