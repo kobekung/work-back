@@ -35,7 +35,7 @@ export class PlanController {
     private readonly memberService: MemberService,
   ) {}
 
-  @Get()
+  @Get(`/:id`)
   async getPlan(
     @Req() request: Request,
     @Param('id') id: string,
@@ -51,10 +51,10 @@ export class PlanController {
     return plan;
   }
 
-  @Get('/:id')
-  async getPlanById(@Param('id') id: number): Promise<Plan> {
-    return await this.PlanService.getPlanById(id);
-  }
+  // @Get('/:id')
+  // async getPlanById(@Param('id') id: number): Promise<Plan> {
+  //   return await this.PlanService.getPlanById(id);
+  // }
 
   @Post()
   async createPlan(
