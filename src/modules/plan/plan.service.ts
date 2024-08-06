@@ -16,6 +16,7 @@ import { ENUM_Role } from 'src/enum/role.enum';
 import { Member } from 'src/models/member.model';
 import { Plan } from 'src/models/plan.model';
 import { CreatePlanDto } from './dto/plan.dto';
+import { IPlan } from 'src/interface/models/plan.model';
 
 @Injectable()
 export class PlanService {
@@ -25,74 +26,91 @@ export class PlanService {
     @InjectModel(Member) private Memberrepository: typeof Member,
     private readonly memberService: MemberService,
   ) {}
-
-  async getPlan({
-    projectId,
-    userId,
-    pagination,
-  }: {
-    projectId: string;
-    userId: number;
-    pagination: IReqPagination;
-  }): Promise<IPagination<IProjectTable>> {
-    const { page = 1, limit = 10 } = pagination;
-  
-    // Calculate offset for pagination
-    const offset = (page - 1) * limit;
-  
-    // Fetch plans with pagination
+  async getPlan({ projectId, userId }: { projectId: string, userId: number }): Promise<IPlan[]> {
     const plans = await this.Planrepository.findAll({
       include: [
         {
           association: 'members',
           where: {
-            projectId,
             userId,
             status: MEMBER_STATUS_ENUM.ACTIVE,
           },
         },
       ],
-      offset,
-      limit,
+      where: {
+        projectId
+      }
     });
-  
-    // Count total plans for pagination
-    const planCount = await this.Planrepository.count({
-      include: [
-        {
-          association: 'members',
-          where: {
-            projectId,
-            userId,
-            status: MEMBER_STATUS_ENUM.ACTIVE,
-          },
-        },
-      ],
-    });
-  
-    // Map and process the plans
-    const planTablePromises = plans.map(async (plan) => {
-      const memberCount = await this.memberService.countMemberByProjectIdForTableProject(plan.id, userId);
-      return {
-        id: plan.id,
-        name: plan.name,
-        progress: Math.floor(Math.random() * 101),
-        planCount: Math.floor(Math.random() * 3),
-        taskCount: Math.floor(Math.random() * 6),
-        memberCount: memberCount,
-      };
-    });
-    const planTable = await Promise.all(planTablePromises);
-  
-    // Return paginated results
-    return {
-      data: planTable,
-      page,
-      limit,
-      totalPage: Math.ceil(planCount / limit),
-      totalRow: planCount,
-    };
+    return plans;
   }
+  
+  // async getPlan({
+  //   projectId,
+  //   userId,
+  //   pagination,
+  // }: {
+  //   projectId: string;
+  //   userId: number;
+  //   pagination: IReqPagination;
+  // }): Promise<IPagination<IProjectTable>> {
+  //   const { page = 1, limit = 10 } = pagination;
+  
+  //   // Calculate offset for pagination
+  //   const offset = (page - 1) * limit;
+  
+  //   // Fetch plans with pagination
+  //   const plans = await this.Planrepository.findAll({
+  //     include: [
+  //       {
+  //         association: 'members',
+  //         where: {
+  //           projectId,
+  //           userId,
+  //           status: MEMBER_STATUS_ENUM.ACTIVE,
+  //         },
+  //       },
+  //     ],
+  //     offset,
+  //     limit,
+  //   });
+  
+  //   // Count total plans for pagination
+  //   const planCount = await this.Planrepository.count({
+  //     include: [
+  //       {
+  //         association: 'members',
+  //         where: {
+  //           projectId,
+  //           userId,
+  //           status: MEMBER_STATUS_ENUM.ACTIVE,
+  //         },
+  //       },
+  //     ],
+  //   });
+  
+  //   // Map and process the plans
+  //   const planTablePromises = plans.map(async (plan) => {
+  //     const memberCount = await this.memberService.countMemberByProjectIdForTableProject(plan.id, userId);
+  //     return {
+  //       id: plan.id,
+  //       name: plan.name,
+  //       progress: Math.floor(Math.random() * 101),
+  //       planCount: Math.floor(Math.random() * 3),
+  //       taskCount: Math.floor(Math.random() * 6),
+  //       memberCount: memberCount,
+  //     };
+  //   });
+  //   const planTable = await Promise.all(planTablePromises);
+  
+  //   // Return paginated results
+  //   return {
+  //     data: planTable,
+  //     page,
+  //     limit,
+  //     totalPage: Math.ceil(planCount / limit),
+  //     totalRow: planCount,
+  //   };
+  // }
 
   async getPlanById(id: number): Promise<Plan> {
     return await this.Planrepository.findByPk(id);

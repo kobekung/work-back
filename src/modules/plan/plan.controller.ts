@@ -26,6 +26,7 @@ import {
 import { CreatePlanDto } from './dto/plan.dto';
 import { Plan } from 'src/models/plan.model';
 import { PlanService } from './plan.service';
+import { IPlan } from 'src/interface/models/plan.model';
 
 @Controller('/plan')
 export class PlanController {
@@ -39,14 +40,13 @@ export class PlanController {
   async getPlan(
     @Req() request: Request,
     @Param('id') id: string,
-    @Query() pagination: IReqPagination,
-  ): Promise<IPagination<IProjectTable>> {
+  ): Promise<IPlan[]> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
+    // const member = await this.memberService.getMemberByUserId(user.id)
     const plan = await this.PlanService.getPlan({
       projectId : id,
       userId: user.id,
-      pagination: pagination,
     });
     return plan;
   }
