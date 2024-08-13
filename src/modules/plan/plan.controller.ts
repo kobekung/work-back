@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Patch,
   Query,
   Req,
 } from '@nestjs/common';
@@ -64,7 +65,7 @@ export class PlanController {
     return planCreated;
   }
 
-  @Put('/:id')
+  @Patch('/:id')
   async updatePlan(
     @Param('id') id: number,
     @Body() project: CreatePlanDto,
