@@ -72,19 +72,11 @@ export class PlanService {
     }
   }
 
-  async deletePlan(id: number, userId: number, planId: number): Promise<number> {
-    const permission = await this.checkpermissionDelete({
-      userId,
-      projectId: id,
-      permissionStatus: MEMBER_PERISSION_ENUM.IS_UPDATE,
-    });
-    if (!permission) {
-      throw new HttpException('ไม่มีสิทธ์', HttpStatus.FORBIDDEN);
-    }
+  async deletePlan(id: number): Promise<number> {
     const t = await this.Planrepository.sequelize.transaction();
     try {
       const planDeleted = await this.Planrepository.destroy({
-        where: { id: planId },
+        where: { id: id },
         transaction: t,
       });
       await t.commit();
