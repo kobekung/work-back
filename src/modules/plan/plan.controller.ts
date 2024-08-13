@@ -65,7 +65,7 @@ export class PlanController {
     return planCreated;
   }
 
-  @Patch('/:id')
+  @Put('/:id')
   async updatePlan(
     @Param('id') id: number,
     @Body() project: CreatePlanDto,
