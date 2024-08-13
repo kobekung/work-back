@@ -1,5 +1,6 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 import { IUser } from 'src/interface/models/user.model';
+import { Worker } from './worker.model';
 
 @Table({
   paranoid: true,
@@ -55,5 +56,10 @@ export class User extends Model<User | IUser> implements IUser {
     type: DataType.STRING,
   })
   socketId?: string;
-}
 
+  @HasMany(() => Worker, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  workers?: Worker[];
+}

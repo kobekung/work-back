@@ -16,6 +16,9 @@ import { ProjectUnitModule } from 'src/modules/project_unit/project_unit.module'
 import { GatewayModule } from 'src/modules/gateway/gateway.module';
 import { Plan } from 'src/models/plan.model';
 import { PlanModule } from 'src/modules/plan/plan.module';
+import { Task } from 'src/models/task.model';
+import { TaskLog } from 'src/models/task_log.model';
+import { Worker } from 'src/models/worker.model';
 
 dotenv.config();
 @Module({
@@ -34,7 +37,18 @@ dotenv.config();
       database: process.env.DATABASE,
       autoLoadModels: true,
       synchronize: true,
-      models: [User, Role, Member, ProjectLog, Project, ProjectUnit, Plan],
+      models: [
+        User,
+        Role,
+        Member,
+        ProjectLog,
+        Project,
+        ProjectUnit,
+        Plan,
+        Task,
+        TaskLog,
+        Worker,
+      ],
     }),
     UserModule,
     ProjectModule,
@@ -43,7 +57,7 @@ dotenv.config();
     UnitModule,
     ProjectUnitModule,
     GatewayModule,
-    PlanModule
+    PlanModule,
   ],
 })
 export class MasterModule {}

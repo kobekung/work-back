@@ -1,20 +1,19 @@
 import {
   Table,
-  Model,
   Column,
+  Model,
   DataType,
-  ForeignKey,
-  BelongsTo,
   HasMany,
+  BelongsTo,
+  ForeignKey,
 } from 'sequelize-typescript';
-import { IPlan } from 'src/interface/models/plan.model';
-import { Project } from './project.model';
+import { ITaskLog } from 'src/interface/models/task_log.model';
 import { Task } from './task.model';
 
 @Table({
   paranoid: true,
 })
-export class Plan extends Model<Plan | IPlan> implements IPlan {
+export class TaskLog extends Model<TaskLog | ITaskLog> implements ITaskLog {
   @Column({
     allowNull: false,
     primaryKey: true,
@@ -27,33 +26,33 @@ export class Plan extends Model<Plan | IPlan> implements IPlan {
     allowNull: false,
     type: DataType.STRING,
   })
-  name: string;
+  newName: string;
 
   @Column({
     allowNull: false,
-    type: DataType.DATE,
+    type: DataType.STRING,
   })
-  startDate: Date;
+  updateTask: string;
 
   @Column({
-    allowNull: false,
+    allowNull: true,
     type: DataType.DATE,
   })
-  endDate: Date;
+  newStartDate: Date;
 
-  @ForeignKey(() => Project)
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+  })
+  newEndDate?: Date;
+
+  @ForeignKey(() => Task)
   @Column({
     allowNull: true,
     type: DataType.INTEGER,
   })
-  projectId?: number;
+  taskId?: number;
 
-  @BelongsTo(() => Project)
-  project?: Project;
-
-  @HasMany(() => Task, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  tasks?: Task[];
+  @BelongsTo(() => Task)
+  task: Task;
 }
