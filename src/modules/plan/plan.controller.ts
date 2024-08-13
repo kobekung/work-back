@@ -59,21 +59,8 @@ export class PlanController {
   @Post()
   async createPlan(
     @Body() project: CreatePlanDto,
-    @Req() request: Request,
   ): Promise<Plan> {
-    const token = request.headers['authorization'] as string;
-    const user = await this.userService.getUserByToken(token);
     const planCreated = await this.PlanService.createPlan(project);
-    const memberDetails = {
-      projectId: planCreated.id,
-      userId: user.id,
-      roleId: ENUM_Role.Owner,
-      status: MEMBER_STATUS_ENUM.ACTIVE,
-    } as AddMemberDto;
-    await this.memberService.createMember(
-      memberDetails,
-      MEMBER_PERISSION_ENUM.IS_OWNER,
-    );
     return planCreated;
   }
 
