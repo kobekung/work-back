@@ -23,6 +23,7 @@ export class PlanService {
   ) {}
   async getPlan({
     projectId,
+    userId,
   }: {
     projectId: string;
     userId: number;
@@ -31,6 +32,9 @@ export class PlanService {
       where: {
         projectId,
       },
+      order: [
+        ['id', 'ASC'],
+      ],
     });
     return plans;
   }
