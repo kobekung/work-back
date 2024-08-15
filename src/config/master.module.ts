@@ -19,6 +19,7 @@ import { PlanModule } from 'src/modules/plan/plan.module';
 import { Task } from 'src/models/task.model';
 import { TaskLog } from 'src/models/task_log.model';
 import { Worker } from 'src/models/worker.model';
+import { PdfModule } from 'src/modules/pdf/pdf.module';
 
 dotenv.config();
 @Module({
@@ -36,7 +37,7 @@ dotenv.config();
       password: process.env.DB_PASSWORD,
       database: process.env.DATABASE,
       autoLoadModels: true,
-      synchronize: true,
+      synchronize: false,
       models: [
         User,
         Role,
@@ -58,6 +59,7 @@ dotenv.config();
     ProjectUnitModule,
     GatewayModule,
     PlanModule,
+    PdfModule,
   ],
 })
 export class MasterModule {}
