@@ -66,9 +66,12 @@ export class ProjectService {
       return {
         id: e.id,
         name: e.name,
-        progress: Math.floor(Math.random() * 101),
-        planCount: Math.floor(Math.random() * 3),
-        taskCount: Math.floor(Math.random() * 6),
+        progress: e.percent,
+        planCount: e.plans.length,
+        taskCount: e.plans.reduce(
+          (count, plan) => count + plan.tasks.length,
+          0,
+        ),
         memberCount: memberCount,
       };
     });
