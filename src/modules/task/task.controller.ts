@@ -29,11 +29,12 @@ import { IPlan } from 'src/interface/models/plan.model';
 import { TaskService } from './task.service';
 import { PlanService } from '../plan/plan.service';
 import { CreateTaskDto } from './dto/task.dto';
+import { ITask } from 'src/interface/models/task.model';
+import { Task } from './../../models/task.model';
 
 @Controller('/task')
 export class TaskController {
   constructor(
-    private readonly PlanService: PlanService,
     private readonly userService: UserService,
     private readonly memberService: MemberService,
     private readonly TaskService: TaskService,
@@ -43,15 +44,15 @@ export class TaskController {
   async getTask(
     @Req() request: Request,
     @Param('id') id: string,
-  ): Promise<IPlan[]> {
+  ): Promise<ITask[]> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
     // const member = await this.memberService.getMemberByUserId(user.id)
-    const plan = await this.PlanService.getPlan({
-      projectId : id,
+    const Task = await this.TaskService.getTask({
+      planId : id,
       userId: user.id,
     });
-    return plan;
+    return Task;
   }
 
   // @Get('/:id')
@@ -61,24 +62,24 @@ export class TaskController {
 
   @Post()
   async createTask(
-    @Body() project: CreateTaskDto,
-  ): Promise<Plan> {
-    const planCreated = await this.PlanService.createPlan(project);
-    return planCreated;
+    @Body() Task: CreateTaskDto,
+  ): Promise<Task> {
+    const TaskCreated = await this.TaskService.createTask(Task);
+    return TaskCreated;
   }
 
   @Put('/:id')
   async updateTask(
     @Param('id') id: number,
-    @Body() project: CreateTaskDto,
+    @Body() task: CreateTaskDto,
   ): Promise<[affectedCount: number]> {
-    return await this.PlanService.updatePlan(id, project);
+    return await this.TaskService.updateTask(id, task);
   }
 
   @Delete('/:id')
   async deleteTask(
     @Param('id') id: number,
   ): Promise<number> {
-    return await this.PlanService.deletePlan(id);
+    return await this.TaskService.deleteTask(id);
   }
 }

@@ -12,6 +12,9 @@ import { Member } from 'src/models/member.model';
 import { Plan } from 'src/models/plan.model';
 import { IPlan } from 'src/interface/models/plan.model';
 import { CreateTaskDto } from './dto/task.dto';
+import { ITask } from 'src/interface/models/task.model';
+import { Task } from 'src/models/task.model';
+
 
 @Injectable()
 export class TaskService {
@@ -19,37 +22,38 @@ export class TaskService {
     @InjectModel(Project) private repository: typeof Project,
     @InjectModel(Plan) private Planrepository: typeof Plan,
     @InjectModel(Member) private Memberrepository: typeof Member,
+    @InjectModel(Task) private Taskrepository: typeof Task,
     private readonly memberService: MemberService,
   ) {}
   async getTask({
     planId
   }: {
-    projectId: string;
+    planId: string;
     userId: number;
-  }): Promise<IPlan[]> {
-    const plans = await this.Planrepository.findAll({
+  }): Promise<ITask[]> {
+    const Task = await this.Taskrepository.findAll({
       where: {
-        projectId,
+        planId
       },
       order: [
         ['id', 'ASC'],
       ],
     });
-    return plans;
+    return Task;
   }
 
-  async getPlanById(id: number): Promise<Plan> {
-    return await this.Planrepository.findByPk(id);
-  }
+  // async getPlanById(id: number): Promise<Plan> {
+  //   return await this.Planrepository.findByPk(id);
+  // }
 
-  async createPlan(plan: CreateTaskDto): Promise<Plan> {
-    const t = await this.repository.sequelize.transaction();
+  async createTask(Task: CreateTaskDto): Promise<Task> {
+    const t = await this.Taskrepository.sequelize.transaction();
     try {
-      const planCreated = await this.Planrepository.create(plan, {
+      const taskCreated = await this.Taskrepository.create(Task, {
         transaction: t,
       });
       await t.commit();
-      return planCreated;
+      return taskCreated;
     } catch (err) {
       console.log(err);
       await t.rollback();
@@ -57,33 +61,33 @@ export class TaskService {
     }
   }
 
-  async updatePlan(
+  async updateTask(
     id: number,
-    plan: CreateTaskDto,
+    task: CreateTaskDto,
   ): Promise<[affectedCount: number]> {
-    const t = await this.Planrepository.sequelize.transaction();
+    const t = await this.Taskrepository.sequelize.transaction();
     try {
-      const planUpdated = await this.Planrepository.update(plan, {
+      const TaskUpdated = await this.Taskrepository.update(task, {
         where: { id },
         transaction: t,
       });
       await t.commit();
-      return planUpdated;
+      return TaskUpdated;
     } catch (err) {
       await t.rollback();
       throw new HttpException(err.response.data, err.response.status);
     }
   }
 
-  async deletePlan(id: number): Promise<number> {
-    const t = await this.Planrepository.sequelize.transaction();
+  async deleteTask(id: number): Promise<number> {
+    const t = await this.Taskrepository.sequelize.transaction();
     try {
-      const planDeleted = await this.Planrepository.destroy({
+      const TaskDeleted = await this.Taskrepository.destroy({
         where: { id: id },
         transaction: t,
       });
       await t.commit();
-      return planDeleted;
+      return TaskDeleted;
     } catch (err) {
       await t.rollback();
       throw new Error(err.message);
@@ -91,36 +95,36 @@ export class TaskService {
   }
   
 
-  async checkpermissionDelete({
-    userId,
-    projectId,
-    permissionStatus,
-  }: {
-    userId: number;
-    projectId: number;
-    permissionStatus: MEMBER_PERISSION_ENUM;
-  }): Promise<boolean> {
-    const whereClause: any = {
-      userId: userId,
-      projectId: projectId,
-      status: MEMBER_STATUS_ENUM.ACTIVE,
-    };
+  // async checkpermissionDelete({
+  //   userId,
+  //   projectId,
+  //   permissionStatus,
+  // }: {
+  //   userId: number;
+  //   projectId: number;
+  //   permissionStatus: MEMBER_PERISSION_ENUM;
+  // }): Promise<boolean> {
+  //   const whereClause: any = {
+  //     userId: userId,
+  //     projectId: projectId,
+  //     status: MEMBER_STATUS_ENUM.ACTIVE,
+  //   };
 
-    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_UPDATE) {
-      whereClause.roleId = {
-        [Op.or]: [ENUM_Role.Owner, ENUM_Role.PM],
-      };
-    }
+  //   if (permissionStatus == MEMBER_PERISSION_ENUM.IS_UPDATE) {
+  //     whereClause.roleId = {
+  //       [Op.or]: [ENUM_Role.Owner, ENUM_Role.PM],
+  //     };
+  //   }
 
-    if (permissionStatus == MEMBER_PERISSION_ENUM.IS_DELETE) {
-      whereClause.roleId = {
-        [Op.or]: [ENUM_Role.Owner],
-      };
-    }
-    const permission = await this.Memberrepository.findOne({
-      where: whereClause,
-    });
+  //   if (permissionStatus == MEMBER_PERISSION_ENUM.IS_DELETE) {
+  //     whereClause.roleId = {
+  //       [Op.or]: [ENUM_Role.Owner],
+  //     };
+  //   }
+  //   const permission = await this.Memberrepository.findOne({
+  //     where: whereClause,
+  //   });
 
-    return Boolean(permission);
-  }
+  //   return Boolean(permission);
+  // }
 }

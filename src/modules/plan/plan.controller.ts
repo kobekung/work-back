@@ -59,9 +59,9 @@ export class PlanController {
 
   @Post()
   async createPlan(
-    @Body() project: CreatePlanDto,
+    @Body() plan: CreatePlanDto,
   ): Promise<Plan> {
-    const planCreated = await this.PlanService.createPlan(project);
+    const planCreated = await this.PlanService.createPlan(plan);
     return planCreated;
   }
 

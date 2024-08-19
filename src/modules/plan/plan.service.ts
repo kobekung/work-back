@@ -12,6 +12,7 @@ import { Member } from 'src/models/member.model';
 import { Plan } from 'src/models/plan.model';
 import { CreatePlanDto } from './dto/plan.dto';
 import { IPlan } from 'src/interface/models/plan.model';
+import { Task } from 'src/models/task.model';
 
 @Injectable()
 export class PlanService {
@@ -19,11 +20,11 @@ export class PlanService {
     @InjectModel(Project) private repository: typeof Project,
     @InjectModel(Plan) private Planrepository: typeof Plan,
     @InjectModel(Member) private Memberrepository: typeof Member,
+    @InjectModel(Task) private Taskrepository: typeof Task,
     private readonly memberService: MemberService,
   ) {}
   async getPlan({
     projectId,
-    userId,
   }: {
     projectId: string;
     userId: number;
@@ -32,6 +33,12 @@ export class PlanService {
       where: {
         projectId,
       },
+      include: [
+        {
+          model: this.Taskrepository,
+          as: 'tasks',
+        },
+      ],
       order: [
         ['id', 'ASC'],
       ],
@@ -44,7 +51,7 @@ export class PlanService {
   }
 
   async createPlan(plan: CreatePlanDto): Promise<Plan> {
-    const t = await this.repository.sequelize.transaction();
+    const t = await this.Planrepository.sequelize.transaction();
     try {
       const planCreated = await this.Planrepository.create(plan, {
         transaction: t,
