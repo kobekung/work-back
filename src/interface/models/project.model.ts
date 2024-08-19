@@ -9,6 +9,7 @@ export interface IProject extends IDefault {
   type?: number;
   unit?: string;
   status?: number;
+  percent?: number;
   budgetYear?: number;
   ownerUnitId?: string;
   projectUnitId?: number;

@@ -55,6 +55,17 @@ export class ProjectLog
   })
   newEndDate?: Date;
 
+  @Column({
+    allowNull: true,
+    type: DataType.INTEGER,
+    defaultValue: 0,
+    validate: {
+      min: 0,
+      max: 100,
+    },
+  })
+  percent?: number;
+
   @BelongsTo(() => Project)
   project?: Project;
 }

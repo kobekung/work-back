@@ -37,7 +37,7 @@ dotenv.config();
       password: process.env.DB_PASSWORD,
       database: process.env.DATABASE,
       autoLoadModels: true,
-      synchronize: false,
+      synchronize: true,
       models: [
         User,
         Role,
