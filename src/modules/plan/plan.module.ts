@@ -8,9 +8,11 @@ import { PlanController } from './plan.controller';
 import { PlanService } from './plan.service';
 import { Plan } from 'src/models/plan.model';
 import { Task } from 'src/models/task.model';
+import { WorkerModule } from '../worker/worker.module';
+import { Worker } from 'src/models/worker.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Project , Member, Plan , Task]), MemberModule,UserModule  , PlanModule],
+  imports: [SequelizeModule.forFeature([Project , Member, Plan , Task , Worker]), MemberModule,UserModule  , PlanModule , WorkerModule],
   controllers: [PlanController],
   providers: [PlanService],
 })

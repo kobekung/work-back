@@ -13,6 +13,7 @@ import { Plan } from 'src/models/plan.model';
 import { CreatePlanDto } from './dto/plan.dto';
 import { IPlan } from 'src/interface/models/plan.model';
 import { Task } from 'src/models/task.model';
+import { Worker } from 'src/models/worker.model';
 
 @Injectable()
 export class PlanService {
@@ -21,30 +22,46 @@ export class PlanService {
     @InjectModel(Plan) private Planrepository: typeof Plan,
     @InjectModel(Member) private Memberrepository: typeof Member,
     @InjectModel(Task) private Taskrepository: typeof Task,
+    @InjectModel(Worker) private Workerrepository: typeof Worker,
     private readonly memberService: MemberService,
   ) {}
   async getPlan({
     projectId,
-  }: {
+    userId,
+}: {
     projectId: string;
     userId: number;
-  }): Promise<IPlan[]> {
+}): Promise<IPlan[]> {
     const plans = await this.Planrepository.findAll({
-      where: {
-        projectId,
-      },
-      include: [
-        {
-          model: this.Taskrepository,
-          as: 'tasks',
+        where: {
+            projectId,
         },
-      ],
-      order: [
-        ['id', 'ASC'],
-      ],
+        include: [
+            {
+                model: this.Taskrepository,
+                as: 'tasks',
+                include: [
+                    {
+                        model: this.Workerrepository,
+                        as: 'worker',
+                        order: [
+                            ['id', 'ASC'],
+                        ],
+                    }
+                ],
+                order: [
+                    ['id', 'ASC'],
+                ],
+            },
+        ],
+        order: [
+            ['id', 'ASC'],
+        ],
     });
     return plans;
-  }
+}
+
+
 
   async getPlanById(id: number): Promise<Plan> {
     return await this.Planrepository.findByPk(id);

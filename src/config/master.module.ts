@@ -21,6 +21,7 @@ import { TaskLog } from 'src/models/task_log.model';
 import { Worker } from 'src/models/worker.model';
 import { PdfModule } from 'src/modules/pdf/pdf.module';
 import { TaskModule } from 'src/modules/task/task.module';
+import { WorkerModule } from 'src/modules/worker/worker.module';
 
 dotenv.config();
 @Module({
@@ -60,6 +61,8 @@ dotenv.config();
     ProjectUnitModule,
     GatewayModule,
     PlanModule,
+    TaskModule,
+    WorkerModule
   ],
 })
 export class MasterModule {}
