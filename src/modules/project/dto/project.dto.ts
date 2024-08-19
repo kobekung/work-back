@@ -42,6 +42,12 @@ export class CreateProjectDto {
   @Type(() => Number)
   budgetYear?: number;
 
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  percent?: number;
+
+
   @IsString()
   @IsOptional()
   ownerUnitId?: string;
