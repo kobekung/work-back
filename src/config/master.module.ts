@@ -19,6 +19,7 @@ import { PlanModule } from 'src/modules/plan/plan.module';
 import { Task } from 'src/models/task.model';
 import { TaskLog } from 'src/models/task_log.model';
 import { Worker } from 'src/models/worker.model';
+import { PdfModule } from 'src/modules/pdf/pdf.module';
 import { TaskModule } from 'src/modules/task/task.module';
 
 dotenv.config();
@@ -59,7 +60,6 @@ dotenv.config();
     ProjectUnitModule,
     GatewayModule,
     PlanModule,
-    TaskModule
   ],
 })
 export class MasterModule {}

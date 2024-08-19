@@ -68,6 +68,17 @@ export class Project extends Model<Project | IProject> implements IProject {
   })
   ownerUnitId?: string;
 
+  @Column({
+    allowNull: true,
+    type: DataType.INTEGER,
+    defaultValue: 0,
+    validate: {
+      min: 0,
+      max: 100,
+    },
+  })
+  percent?: number;
+
   @ForeignKey(() => ProjectUnit)
   @Column({
     allowNull: true,
@@ -92,7 +103,7 @@ export class Project extends Model<Project | IProject> implements IProject {
     onUpdate: 'CASCADE',
   })
   plans?: Plan[];
-  
+
   @BelongsTo(() => ProjectUnit)
   projectUnit?: ProjectUnit;
 }
