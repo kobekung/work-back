@@ -56,26 +56,28 @@ export class ProjectService {
         },
       ],
     });
-    //to ProjectTable
-    const projectTablePromises = await projects.map(async (e) => {
-      const memberCount =
-        await this.memberService.countMemberByProjectIdForTableProject(
-          e.id,
-          userId,
-        );
+    const projectTablePromises = projects.map(async (e) => {
+      const plans = e.plans || [];
+      const planCount = plans.length;
+      const taskCount = plans.reduce(
+        (count, plan) => count + (plan.tasks?.length || 0),
+        0,
+      );
+    
+      const memberCount = await this.memberService.countMemberByProjectIdForTableProject(e.id, userId);
+    
       return {
         id: e.id,
         name: e.name,
         progress: e.percent,
-        planCount: e.plans.length,
-        taskCount: e.plans.reduce(
-          (count, plan) => count + plan.tasks.length,
-          0,
-        ),
+        planCount: planCount,
+        taskCount: taskCount,
         memberCount: memberCount,
       };
     });
+    
     const projectTable = await Promise.all(projectTablePromises);
+    
     return {
       data: projectTable,
       page: pagination.page,
