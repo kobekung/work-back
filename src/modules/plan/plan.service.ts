@@ -28,40 +28,32 @@ export class PlanService {
   async getPlan({
     projectId,
     userId,
-}: {
+  }: {
     projectId: string;
     userId: number;
-}): Promise<IPlan[]> {
+  }): Promise<IPlan[]> {
     const plans = await this.Planrepository.findAll({
-        where: {
-            projectId,
-        },
-        include: [
+      where: {
+        projectId,
+      },
+      include: [
+        {
+          model: this.Taskrepository,
+          as: 'tasks',
+          include: [
             {
-                model: this.Taskrepository,
-                as: 'tasks',
-                include: [
-                    {
-                        model: this.Workerrepository,
-                        as: 'worker',
-                        order: [
-                            ['id', 'ASC'],
-                        ],
-                    }
-                ],
-                order: [
-                    ['id', 'ASC'],
-                ],
+              model: this.Workerrepository,
+              as: 'worker',
+              order: [['id', 'ASC']],
             },
-        ],
-        order: [
-            ['id', 'ASC'],
-        ],
+          ],
+          order: [['id', 'ASC']],
+        },
+      ],
+      order: [['id', 'ASC']],
     });
     return plans;
-}
-
-
+  }
 
   async getPlanById(id: number): Promise<Plan> {
     return await this.Planrepository.findByPk(id);
@@ -114,7 +106,6 @@ export class PlanService {
       throw new Error(err.message);
     }
   }
-  
 
   async checkpermissionDelete({
     userId,

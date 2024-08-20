@@ -56,11 +56,11 @@ export class Task extends Model<Task | ITask> implements ITask {
   taskLogs?: TaskLog[];
 
   @HasMany(() => Worker, {
+    as: 'worker',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   workers?: Worker[];
-  
   @BelongsTo(() => Plan)
   plan: Plan;
 }
