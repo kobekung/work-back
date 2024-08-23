@@ -7,6 +7,6 @@ export interface ITask extends IDefault {
   name?: string;
   startDate?: Date;
   endDate?: Date;
-  status?: number;
+  status?: boolean;
   taskLogs?: ITaskLog[];
 }

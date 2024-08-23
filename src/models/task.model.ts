@@ -42,6 +42,12 @@ export class Task extends Model<Task | ITask> implements ITask {
   })
   endDate: Date;
 
+@Column({
+    allowNull: true,
+    type: DataType.BOOLEAN,
+  })
+  status: boolean;
+
   @ForeignKey(() => Plan)
   @Column({
     allowNull: false,
