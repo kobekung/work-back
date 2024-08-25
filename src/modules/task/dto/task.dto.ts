@@ -10,26 +10,31 @@ import {
 
 export class CreateTaskDto {
   @IsString()
-  @IsNotEmpty()
+    // @IsNotEmpty()
+    @IsOptional()
   name: string;
 
   @IsDate()
-  @IsNotEmpty()
+    // @IsNotEmpty()
+    @IsOptional()
   @Type(() => Date)
   startDate: Date;
 
   @IsDate()
-  @IsNotEmpty()
+  // @IsNotEmpty()
+    @IsOptional()
   @Type(() => Date)
   endDate: Date;
 
   @IsNumber()
-  @IsNotEmpty()
+    // @IsNotEmpty()
+    @IsOptional()
   @Type(() => Number)
   planId: number;
 
   @IsBoolean()
-  @IsNotEmpty()
+    // @IsNotEmpty()
+    @IsOptional()
   @Type(() => Boolean)
   status: boolean;
 }
