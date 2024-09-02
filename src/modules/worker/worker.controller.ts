@@ -73,9 +73,7 @@ export class WorkerController {
   ): Promise<Worker> {
     const token = request.headers['authorization'] as string;
     const sender = await this.userService.getUserByToken(token);
-    const user = await this.userService.getUserByIdp(worker.id, token);
     const payload = {
-      userId: user.id,
       senderId: sender.id,
       taskId: worker.taskId,
     } as AddWorkerDto;
