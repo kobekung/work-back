@@ -20,5 +20,5 @@ export class AddWorkerRequestDto {
 
   @IsString()
   @IsNotEmpty()
-  idp: string;
+  id: string;
 }
