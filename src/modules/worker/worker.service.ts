@@ -81,7 +81,7 @@ export class WorkerService {
     worker: AddWorkerDto,
     // permissionStatus: MEMBER_PERISSION_ENUM,
   ): Promise<Worker> {
-    const t = await this.repository.sequelize.transaction();
+    const t = await this.Workerrepository.sequelize.transaction();
     try {
       // const permission = await this.checkpermissionForProject({
       //   userId: worker.senderId ? worker.senderId : worker.userId,
@@ -93,7 +93,7 @@ export class WorkerService {
       // }
       const findWorker = await this.Workerrepository.findOne({
         where: {
-          userId: worker.userId,
+          id: worker.userId,
           taskId: worker.taskId,
         },
       });

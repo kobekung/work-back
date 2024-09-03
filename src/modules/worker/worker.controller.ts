@@ -30,11 +30,11 @@ export class WorkerController {
   @Get('/:id')
   async getWorker(
     @Param('id') id,
-    @Req() request: Request,
-    @Query() query?: { status: MEMBER_STATUS_ENUM },
+    // @Req() request: Request,
+    // @Query() query?: { status: MEMBER_STATUS_ENUM },
   ): Promise<IWorker[]> {
-    const token = request.headers['authorization'] as string;
-    const user = await this.userService.getUserByToken(token);
+    // const token = request.headers['authorization'] as string;
+    // const user = await this.userService.getUserByToken(token);
     return await this.WorkerService.getWorkerByTaskID(id);
   }
 
