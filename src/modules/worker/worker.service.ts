@@ -80,9 +80,11 @@ export class WorkerService {
   async createWorker(
     worker: AddWorkerDto,
     // permissionStatus: MEMBER_PERISSION_ENUM,
-  ): Promise<Worker> {
+  ) {
     const t = await this.Workerrepository.sequelize.transaction();
     try {
+      console.log('Transaction Started');
+  
       // const permission = await this.checkpermissionForProject({
       //   userId: worker.senderId ? worker.senderId : worker.userId,
       //   taskId: worker.taskId,
@@ -91,25 +93,34 @@ export class WorkerService {
       // if (!permission) {
       //   throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       // }
+      
+      console.log('Checking for existing worker');
       const findWorker = await this.Workerrepository.findOne({
         where: {
           userId: worker.userId,
           taskId: worker.taskId,
         },
       });
+      
       if (findWorker) {
         throw new HttpException('Worker already exists', HttpStatus.CONFLICT);
       }
+      
+      console.log('Creating new worker');
       const workerCreated = await this.Workerrepository.create(worker, {
         transaction: t,
       });
+      
       await t.commit();
+      console.log('Transaction Committed');
       return workerCreated;
     } catch (err) {
+      console.error('Transaction Error:', err);  // Log error details
       await t.rollback();
-      throw new HttpException(err.response, err.status);
+      throw new HttpException(err.message || 'Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  
 
   // async updateMember(
   //   userId: number,

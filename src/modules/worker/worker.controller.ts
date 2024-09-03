@@ -68,17 +68,10 @@ export class WorkerController {
 
   @Post()
   async createMember(
-    @Body() worker: AddWorkerRequestDto,
-    @Req() request: Request,
-  ): Promise<Worker> {
-    const token = request.headers['authorization'] as string;
-    const sender = await this.userService.getUserByToken(token);
-    const payload = {
-      senderId: sender.id,
-      taskId: worker.taskId,
-    } as AddWorkerDto;
+    @Body() worker: AddWorkerDto,
+  ) {
     return await this.WorkerService.createWorker(
-      payload
+      worker
     );
   }
 

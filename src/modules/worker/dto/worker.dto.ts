@@ -9,9 +9,6 @@ export class AddWorkerDto {
   @IsNotEmpty()
   userId: number;
 
-  @IsNumber()
-  @IsOptional()
-  senderId: number;
 }
 export class AddWorkerRequestDto {
   @IsNumber()
