@@ -93,7 +93,7 @@ export class WorkerService {
       // }
       const findWorker = await this.Workerrepository.findOne({
         where: {
-          id: worker.userId,
+          userId: worker.userId,
           taskId: worker.taskId,
         },
       });
