@@ -14,6 +14,7 @@ import { CreatePlanDto } from './dto/plan.dto';
 import { IPlan } from 'src/interface/models/plan.model';
 import { Task } from 'src/models/task.model';
 import { Worker } from 'src/models/worker.model';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class PlanService {
@@ -23,6 +24,7 @@ export class PlanService {
     @InjectModel(Member) private Memberrepository: typeof Member,
     @InjectModel(Task) private Taskrepository: typeof Task,
     @InjectModel(Worker) private Workerrepository: typeof Worker,
+    @InjectModel(User) private Userrepository: typeof User,
     private readonly memberService: MemberService,
   ) {}
   async getPlan({
@@ -44,6 +46,13 @@ export class PlanService {
             {
               model: this.Workerrepository,
               as: 'worker',
+              include: [
+                {
+                  model: this.Userrepository,
+                  as: 'user',
+                  order: [['id', 'ASC']],
+                },
+              ],
               order: [['id', 'ASC']],
             },
           ],
