@@ -35,25 +35,19 @@ export class ProjectLog
     allowNull: true,
     type: DataType.STRING,
   })
-  newName?: string;
-
-  @Column({
-    allowNull: true,
-    type: DataType.STRING,
-  })
-  oldName?: string;
+  name?: string;
 
   @Column({
     allowNull: true,
     type: DataType.DATE,
   })
-  newStartDate?: Date;
+  startDate?: Date;
 
   @Column({
     allowNull: true,
     type: DataType.DATE,
   })
-  newEndDate?: Date;
+  endDate?: Date;
 
   @Column({
     allowNull: true,

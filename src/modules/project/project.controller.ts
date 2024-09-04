@@ -25,6 +25,7 @@ import {
   IPagination,
   IReqPagination,
 } from 'src/interface/pagination.interface';
+import { ProjectLogService } from '../project_log/project_log.service';
 
 @Controller('/project')
 export class ProjectController {
@@ -32,6 +33,7 @@ export class ProjectController {
     private readonly projectService: ProjectService,
     private readonly userService: UserService,
     private readonly memberService: MemberService,
+    private readonly projectLogService: ProjectLogService,
   ) {}
 
   @Get()
@@ -71,6 +73,14 @@ export class ProjectController {
       memberDetails,
       MEMBER_PERISSION_ENUM.IS_OWNER,
     );
+    const project_log = {
+      name: project.name,
+      startDate: project.startDate,
+      endDate: project.endDate,
+      percent: project.percent,
+      projectId: projectCreated.id,
+    };
+    await this.projectLogService.createProjectLog(project_log);
     return projectCreated;
   }
 
@@ -79,13 +89,26 @@ export class ProjectController {
     @Param('id') id: number,
     @Body() project: CreateProjectDto,
   ): Promise<[affectedCount: number]> {
-    return await this.projectService.updateProject(id, project);
+    const updateProject = this.projectService.updateProject(id, project);
+    const project_log = {
+      name: project.name,
+      startDate: project.startDate,
+      endDate: project.endDate,
+      percent: project.percent,
+      projectId: id,
+    };
+    await this.projectLogService.createProjectLog(project_log);
+    return updateProject;
   }
 
   @Delete('/:id')
-  async deleteProject(@Param('id') id: number , @Req() request: Request, @Body('name') name: string,): Promise<number> {
+  async deleteProject(
+    @Param('id') id: number,
+    @Req() request: Request,
+    @Body('name') name: string,
+  ): Promise<number> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
-    return await this.projectService.deleteProject(id , user.id , name);
+    return await this.projectService.deleteProject(id, user.id, name);
   }
 }
