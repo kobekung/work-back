@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ProjectController } from './project.controller';
-import { ProjectService } from './project.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Project } from 'src/models/project.model';
-import { MemberModule } from '../member/member.module';
-import { UserModule } from '../user/user.module';
-import { Member } from 'src/models/member.model';
+import { ProjectLog } from 'src/models/project_log.model';
+import { ProjectLogController } from './project_log.controller';
+import { ProjectLogService } from './project_log.service';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Project , Member]), MemberModule,UserModule  ],
-  controllers: [ProjectController],
-  providers: [ProjectService],
+  imports: [SequelizeModule.forFeature([ProjectLog])],
+  controllers: [ProjectLogController],
+  providers: [ProjectLogService],
+  exports: [ProjectLogService],
 })
-export class ProjectModule {}
-
+export class ProjectLogModule {}
