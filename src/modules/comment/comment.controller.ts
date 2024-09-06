@@ -37,28 +37,16 @@ export class CommentController {
       user.id,
     );
     return newComment;
-
-    return;
-  }
-
-  @Put('/:id')
-  async updateProject(
-    @Param('id') id: number,
-    @Body() data: UpdateCommentDto,
-    @Req() request: Request,
-  ): Promise<[affectedCount: number]> {
-    const token = request.headers['authorization'] as string;
-    const user = await this.userService.getUserByToken(token);
-    return;
   }
 
   @Delete('/:id')
   async deleteProject(
     @Param('id') id: number,
     @Req() request: Request,
-  ): Promise<String> {
+  ): Promise<Number> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
-    return;
+    const comment = await this.commentService.DeleteComment(id, user.id);
+    return comment;
   }
 }
