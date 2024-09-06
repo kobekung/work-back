@@ -148,7 +148,7 @@ export class WorkerService {
       // if (!permission) {
       //   throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       // }
-      await this.repository.destroy({
+      await this.Workerrepository.destroy({
         where: { id },
       });
       await t.commit();
