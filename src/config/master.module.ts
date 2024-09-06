@@ -23,6 +23,7 @@ import { PdfModule } from 'src/modules/pdf/pdf.module';
 import { TaskModule } from 'src/modules/task/task.module';
 import { WorkerModule } from 'src/modules/worker/worker.module';
 import { Comment } from 'src/models/comment.model';
+import { CommentModule } from 'src/modules/comment/comment.module';
 
 dotenv.config();
 @Module({
@@ -59,6 +60,8 @@ dotenv.config();
     ProjectModule,
     RoleModule,
     MemberModule,
+    CommentModule,
+    PdfModule,
     UnitModule,
     ProjectUnitModule,
     GatewayModule,
