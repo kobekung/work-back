@@ -6,10 +6,11 @@ import { WorkerController } from './worker.controller';
 import { WorkerService } from './worker.service';
 import { MemberModule } from '../member/member.module';
 import { Worker } from 'src/models/worker.model';
+import { User } from 'src/models/user.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Member , Worker]),
+    SequelizeModule.forFeature([Member , Worker,User]),
     UserModule,MemberModule, WorkerModule
   ],
   controllers: [WorkerController],

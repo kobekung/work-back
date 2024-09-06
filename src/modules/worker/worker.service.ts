@@ -10,17 +10,17 @@ import { Op } from 'sequelize';
 import { IWorker } from 'src/interface/models/worker.model';
 import { Worker } from 'src/models/worker.model';
 import { AddWorkerDto } from './dto/worker.dto';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class WorkerService {
   constructor(
     @InjectModel(Member) private repository: typeof Member,
     @InjectModel(Worker) private Workerrepository: typeof Worker,
+    @InjectModel(User) private Userrepository: typeof User,
   ) {}
 
-  async getWorkerByTaskID(
-    id: number,
-  ): Promise<IWorker[]> {
+  async getWorkerByTaskID(id: number): Promise<IWorker[]> {
     // const permission = await this.checkpermissionForProject({
     //   userId,
     //   taskId,
@@ -43,48 +43,12 @@ export class WorkerService {
     return worker;
   }
 
-  // async getMemberByUserId(
-  //   id: number,
-  //   status: MEMBER_STATUS_ENUM,
-  // ): Promise<Member[]> {
-  //   if (status) {
-  //     return await this.repository.findAll({
-  //       include: [{ all: true }],
-  //       where: { userId: id, status },
-  //     });
-  //   }
-  //   return await this.repository.findAll({
-  //     include: [{ all: true }],
-  //     where: { userId: id },
-  //   });
-  // }
-
-  // async getMemberFromLdapByName(
-  //   name: string,
-  //   token: string,
-  // ): Promise<IProfile[]> {
-  //   try {
-  //     const users = await getByName(name, token);
-  //     return users;
-  //   } catch (err) {
-  //     throw new HttpException(err.response, err.status);
-  //   }
-  // }
-
-  // async getMemberBySenderId(id: number): Promise<Member[]> {
-  //   return await this.repository.findAll({
-  //     include: [{ all: true }],
-  //     where: { senderId: id, status: MEMBER_STATUS_ENUM.PENDING },
-  //   });
-  // }
   async createWorker(
     worker: AddWorkerDto,
     // permissionStatus: MEMBER_PERISSION_ENUM,
   ) {
     const t = await this.Workerrepository.sequelize.transaction();
     try {
-      console.log('Transaction Started');
-  
       // const permission = await this.checkpermissionForProject({
       //   userId: worker.senderId ? worker.senderId : worker.userId,
       //   taskId: worker.taskId,
@@ -93,34 +57,36 @@ export class WorkerService {
       // if (!permission) {
       //   throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       // }
-      
-      console.log('Checking for existing worker');
+      const finduser = await this.Userrepository.findByPk(worker.userId);
+      if (!finduser) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
       const findWorker = await this.Workerrepository.findOne({
         where: {
           userId: worker.userId,
           taskId: worker.taskId,
         },
       });
-      
+
       if (findWorker) {
         throw new HttpException('Worker already exists', HttpStatus.CONFLICT);
       }
-      
-      console.log('Creating new worker');
+
       const workerCreated = await this.Workerrepository.create(worker, {
         transaction: t,
       });
-      
+
       await t.commit();
-      console.log('Transaction Committed');
       return workerCreated;
     } catch (err) {
-      console.error('Transaction Error:', err);  // Log error details
+      console.error('Transaction Error:', err); // Log error details
       await t.rollback();
-      throw new HttpException(err.message || 'Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        err.message || 'Internal Server Error',
+        err.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
-  
 
   // async updateMember(
   //   userId: number,
@@ -189,7 +155,10 @@ export class WorkerService {
       return 'Member Deleted Successfully';
     } catch (err) {
       await t.rollback();
-      throw new HttpException(err.response, err.status);
+      throw new HttpException(
+        err.message || 'Internal Server Error',
+        err.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

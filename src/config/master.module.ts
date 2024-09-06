@@ -62,7 +62,7 @@ dotenv.config();
     GatewayModule,
     PlanModule,
     TaskModule,
-    WorkerModule
+    WorkerModule,
   ],
 })
 export class MasterModule {}
