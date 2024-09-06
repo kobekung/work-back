@@ -32,6 +32,7 @@ export class CommentController {
       ...data,
       userId: user.id,
     };
+
     const newComment = await this.commentService.createComment(
       payload,
       user.id,

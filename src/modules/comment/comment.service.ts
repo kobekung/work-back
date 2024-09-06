@@ -34,7 +34,6 @@ export class CommentService {
             include: [
               {
                 model: Project,
-                where: { userId },
               },
             ],
           },
@@ -53,6 +52,7 @@ export class CommentService {
       await t.commit();
       return comment;
     } catch (err) {
+      console.log(err)
       await t.rollback();
       throw new HttpException(err.response, err.status);
     }

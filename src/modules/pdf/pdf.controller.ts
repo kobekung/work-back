@@ -16,9 +16,9 @@ export class PdfController {
     res.end(buffer);
   }
 
-  @Get("2")
+  @Get('2')
   async getPDF2(@Res() res) {
-    const buffer = await this.pdfService.getPDF2();
+    const buffer = await this.pdfService.getPDF2(1);
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': 'attachment; filename=example.pdf',

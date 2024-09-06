@@ -1,9 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { height } from 'pdfkit/js/page';
+import { Index } from 'sequelize-typescript';
+import { Member } from 'src/models/member.model';
+import { Project } from 'src/models/project.model';
+import { ProjectLog } from 'src/models/project_log.model';
+import { ProjectUnit } from 'src/models/project_unit.model';
 const PDFDocument = require('pdfkit-table');
 
 @Injectable()
 export class PdfService {
+  constructor(@InjectModel(Project) private repository: typeof Project) {}
+
   async getPDF(): Promise<Buffer> {
     const pdfBuffer: Buffer = await new Promise((resolve) => {
       //horizontal margin top and bottom 10 px
@@ -65,7 +73,53 @@ export class PdfService {
     return pdfBuffer;
   }
 
-  async getPDF2(): Promise<Buffer> {
+  async getPDF2(userId: number): Promise<Buffer> {
+    const data = await this.repository.findAll({
+      include: [
+        {
+          model: ProjectLog,
+        },
+        {
+          model: ProjectUnit,
+        },
+        {
+          model: Member,
+          as: 'members',
+          where: {
+            userId,
+          },
+        },
+      ],
+    });
+    const rows2 = data.map((project, index) => {
+      //percent is last projectlog in month start at october  to september
+      
+      return {
+        index: index + 1,
+        name: project.name,
+        unit: project.projectUnit.name,
+        percent: ['10%', '25%'],
+        remark: '',
+      };
+    });
+    const rows = [
+      {
+        index: '2.4',
+        task: 'งานซื้อพร้อมติดตั้งและพัฒนาปรับเปลี่ยน\nระบบจัดการเอกสารอิเล็กทรอนิกส์\n(วงเงิน 4,280,000.-บาท)',
+        unit: 'ศทส.ทหาร',
+        percents: ['5%', '10%', '15%', '', '', '70%'],
+        summary:
+          'เปิดซองประกวดราคา\nเรียบร้อยแล้ว\nบริษัท ไทคิสวิก จำกัด\nวงเงิน 4,280,000.-บาท',
+      },
+      {
+        index: '2.5',
+        task: 'งานบำรุงรักษาระบบบริหารงานสารบรรณ\nตามโครงการพัฒนาโครงสร้างพื้นฐาน\nด้านเทคโนโลยีสารสนเทศ ประจำปีงบประมาณ\nพ.ศ. 2567 (วงเงิน 6,500,000.-บาท)',
+        unit: 'สน.ทหาร',
+        percents: ['5%', '10%', '15%', '', '', '65%'],
+        summary: 'อยู่ระหว่างการขออนุมัติ\nจัดซื้อจัดจ้าง',
+      },
+    ];
+
     const pdfBuffer: Buffer = await new Promise((resolve) => {
       //horizontal margin top and bottom 10 px
       const doc = new PDFDocument({
@@ -83,6 +137,7 @@ export class PdfService {
 
       doc.fontSize(12).text('หน่วย กพร.ศทส.สส.ทหาร', {
         align: 'center',
+        margin: { top: 20, bottom: 20 },
       });
       //   function addTable() {
       //     // doc.font('Helvetica').fontSize(10);
@@ -192,7 +247,7 @@ export class PdfService {
           },
         ];
 
-        const startY = 40;
+        const startY = 60;
 
         headers.forEach((header) => {
           doc.text(header.label, header.x, startY, {
@@ -200,7 +255,12 @@ export class PdfService {
             align: 'center',
           });
           doc
-            .rect(header.x, startY - 10, header.width, header.height ? header.height : 20)
+            .rect(
+              header.x,
+              startY - 10,
+              header.width,
+              header.height ? header.height : 20,
+            )
             .stroke();
         });
 
@@ -244,25 +304,8 @@ export class PdfService {
         }
 
         // Add data rows with matching percentages
-        const rows = [
-          {
-            index: '2.4',
-            task: 'งานซื้อพร้อมติดตั้งและพัฒนาปรับเปลี่ยน\nระบบจัดการเอกสารอิเล็กทรอนิกส์\n(วงเงิน 4,280,000.-บาท)',
-            unit: 'ศทส.ทหาร',
-            percents: ['5%', '10%', '15%', '', '', '70%'],
-            summary:
-              'เปิดซองประกวดราคา\nเรียบร้อยแล้ว\nบริษัท ไทคิสวิก จำกัด\nวงเงิน 4,280,000.-บาท',
-          },
-          {
-            index: '2.5',
-            task: 'งานบำรุงรักษาระบบบริหารงานสารบรรณ\nตามโครงการพัฒนาโครงสร้างพื้นฐาน\nด้านเทคโนโลยีสารสนเทศ ประจำปีงบประมาณ\nพ.ศ. 2567 (วงเงิน 6,500,000.-บาท)',
-            unit: 'สน.ทหาร',
-            percents: ['5%', '10%', '15%', '', '', '65%'],
-            summary: 'อยู่ระหว่างการขออนุมัติ\nจัดซื้อจัดจ้าง',
-          },
-        ];
 
-        let y = 100;
+        let y = 120;
         rows.forEach((row) => {
           const rowHeight = 80; // Height of each row
 
