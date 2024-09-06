@@ -11,18 +11,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { UserService } from '../user/services/user.service';
-import { ENUM_Role } from 'src/enum/role.enum';
-import { AddMemberDto } from '../member/dto/member.dto';
-import {
-  MEMBER_PERISSION_ENUM,
-  MEMBER_STATUS_ENUM,
-} from 'src/enum/member.status';
 import { MemberService } from '../member/member.service';
-import { IProjectTable } from 'src/interface/models/project.model';
-import {
-  IPagination,
-  IReqPagination,
-} from 'src/interface/pagination.interface';
 
 import { Plan } from 'src/models/plan.model';
 import { IPlan } from 'src/interface/models/plan.model';

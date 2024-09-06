@@ -22,6 +22,7 @@ import { Worker } from 'src/models/worker.model';
 import { PdfModule } from 'src/modules/pdf/pdf.module';
 import { TaskModule } from 'src/modules/task/task.module';
 import { WorkerModule } from 'src/modules/worker/worker.module';
+import { Comment } from 'src/models/comment.model';
 
 dotenv.config();
 @Module({
@@ -51,6 +52,7 @@ dotenv.config();
         Task,
         TaskLog,
         Worker,
+        Comment,
       ],
     }),
     UserModule,
