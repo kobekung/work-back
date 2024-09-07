@@ -15,6 +15,7 @@ import { IPlan } from 'src/interface/models/plan.model';
 import { Task } from 'src/models/task.model';
 import { Worker } from 'src/models/worker.model';
 import { User } from 'src/models/user.model';
+import { Comment } from 'src/models/comment.model';
 
 @Injectable()
 export class PlanService {
@@ -25,6 +26,7 @@ export class PlanService {
     @InjectModel(Task) private Taskrepository: typeof Task,
     @InjectModel(Worker) private Workerrepository: typeof Worker,
     @InjectModel(User) private Userrepository: typeof User,
+    @InjectModel(Comment) private Commentrepository: typeof Comment,
     private readonly memberService: MemberService,
   ) {}
   async getPlan({
@@ -53,6 +55,18 @@ export class PlanService {
                   order: [['id', 'ASC']],
                 },
               ],
+              order: [['id', 'ASC']],
+            },
+            {
+              model: this.Commentrepository,
+              as: 'comment',
+              // include: [
+              //   {
+              //     model: this.Commentrepository,
+              //     as: 'comment',
+              //     order: [['id', 'ASC']],
+              //   },
+              // ],
               order: [['id', 'ASC']],
             },
           ],

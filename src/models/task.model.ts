@@ -11,6 +11,7 @@ import { ITask } from 'src/interface/models/task.model';
 import { Plan } from './plan.model';
 import { TaskLog } from './task_log.model';
 import { Worker } from './worker.model';
+import { Comment } from './comment.model';
 
 @Table({
   paranoid: true,
@@ -67,6 +68,14 @@ export class Task extends Model<Task | ITask> implements ITask {
     onUpdate: 'CASCADE',
   })
   workers?: Worker[];
+
+  // @HasMany(() => Comment, {
+  //   as: 'comment',
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE',
+  // })
+  // comments?: Comment[];
+
   @BelongsTo(() => Plan)
   plan: Plan;
 }
