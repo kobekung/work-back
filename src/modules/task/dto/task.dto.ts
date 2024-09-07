@@ -1,34 +1,40 @@
-import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
-import { STATUS_ENUM } from 'src/enum/status.enum';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsBoolean
+} from 'class-validator';
 
 export class CreateTaskDto {
   @IsString()
-  // @IsNotEmpty()
-  @IsOptional()
+    // @IsNotEmpty()
+    @IsOptional()
   name: string;
 
   @IsDate()
-  // @IsNotEmpty()
-  @IsOptional()
+    // @IsNotEmpty()
+    @IsOptional()
   @Type(() => Date)
   startDate: Date;
 
   @IsDate()
   // @IsNotEmpty()
-  @IsOptional()
+    @IsOptional()
   @Type(() => Date)
   endDate: Date;
 
   @IsNumber()
-  // @IsNotEmpty()
-  @IsOptional()
+    // @IsNotEmpty()
+    @IsOptional()
   @Type(() => Number)
   planId: number;
 
-  @IsNumber()
-  // @IsNotEmpty()
-  @IsOptional()
-  @Type(() => Number)
-  status: STATUS_ENUM;
+  @IsBoolean()
+    // @IsNotEmpty()
+    @IsOptional()
+  @Type(() => Boolean)
+  status: boolean;
 }
