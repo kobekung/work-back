@@ -12,6 +12,7 @@ import { Plan } from './plan.model';
 import { TaskLog } from './task_log.model';
 import { Worker } from './worker.model';
 import { Comment } from './comment.model';
+import { STATUS_ENUM } from 'src/enum/status.enum';
 
 @Table({
   paranoid: true,
@@ -43,11 +44,11 @@ export class Task extends Model<Task | ITask> implements ITask {
   })
   endDate: Date;
 
-@Column({
+  @Column({
     allowNull: true,
-    type: DataType.BOOLEAN,
+    type: DataType.NUMBER,
   })
-  status: boolean;
+  status: STATUS_ENUM;
 
   @ForeignKey(() => Plan)
   @Column({
