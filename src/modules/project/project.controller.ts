@@ -26,6 +26,7 @@ import {
   IReqPagination,
 } from 'src/interface/pagination.interface';
 import { ProjectLogService } from '../project_log/project_log.service';
+import { IDashboard } from 'src/interface/dashboard.interface';
 
 @Controller('/project')
 export class ProjectController {
@@ -50,17 +51,14 @@ export class ProjectController {
     return project;
   }
 
-  @Get()
+  @Get('/dashboard')
   async getDashboard(
     @Req() request: Request,
     @Query() pagination: IReqPagination,
-  ): Promise<IPagination<IProjectTable>> {
+  ): Promise<IDashboard> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
-    const project = await this.projectService.getProject({
-      userId: user.id,
-      pagination: pagination,
-    });
+    const project = await this.projectService.getDashboard(user.id);
     return project;
   }
 

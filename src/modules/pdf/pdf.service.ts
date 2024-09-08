@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { height } from 'pdfkit/js/page';
+import { height, layout } from 'pdfkit/js/page';
 import { Op } from 'sequelize';
 import { Index } from 'sequelize-typescript';
 import { MEMBER_STATUS_ENUM } from 'src/enum/member.status';
@@ -93,6 +93,7 @@ export class PdfService {
       const doc = new PDFDocument({
         size: 'A4',
         bufferPages: true,
+        // layout: 'portrait',
         layout: 'landscape',
         margin: 10,
         font: 'fonts/THSarabun.ttf',
@@ -204,7 +205,7 @@ export class PdfService {
         const headers = [
           { label: 'ลำดับ', width: 40, x: 20, height: 60 },
           { label: 'งานปฏิบัติราชการ', width: 140, x: 60, height: 60 },
-          { label: 'หน่วยเข้าของระบบ', width: 100, x: 200, height: 60 },
+          { label: 'หน่วยเจ้าของระบบ', width: 100, x: 200, height: 60 },
           { label: '2566', width: 160, x: 300 },
           { label: '2567', width: 160, x: 460 },
           {

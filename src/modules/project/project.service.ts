@@ -96,7 +96,7 @@ export class ProjectService {
     const projects = await this.repository.findAll({
       include: [
         {
-          association: 'members',
+          model: Member,
           where: {
             userId: userId,
             status: MEMBER_STATUS_ENUM.ACTIVE,
@@ -113,7 +113,7 @@ export class ProjectService {
         .length,
       projects: projects,
     } as IDashboard;
-    return data;
+    return data
   }
 
   async getProjectById(id: number): Promise<Project> {

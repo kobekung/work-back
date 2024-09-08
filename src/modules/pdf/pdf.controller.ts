@@ -20,7 +20,7 @@ export class PdfController {
     const buffer = await this.pdfService.getPDF2(user.id, parseInt(year, 10));
     res.set({
       'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename=example.pdf',
+      'Content-Disposition': 'attachment; filename=report.pdf',
       'Content-Length': buffer.length,
     });
     res.end(buffer);
