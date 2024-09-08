@@ -50,6 +50,20 @@ export class ProjectController {
     return project;
   }
 
+  @Get()
+  async getDashboard(
+    @Req() request: Request,
+    @Query() pagination: IReqPagination,
+  ): Promise<IPagination<IProjectTable>> {
+    const token = request.headers['authorization'] as string;
+    const user = await this.userService.getUserByToken(token);
+    const project = await this.projectService.getProject({
+      userId: user.id,
+      pagination: pagination,
+    });
+    return project;
+  }
+
   @Get('/:id')
   async getProjectById(@Param('id') id: number): Promise<Project> {
     return await this.projectService.getProjectById(id);

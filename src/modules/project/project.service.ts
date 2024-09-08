@@ -15,6 +15,7 @@ import {
 import { Op } from 'sequelize';
 import { ENUM_Role } from 'src/enum/role.enum';
 import { Member } from 'src/models/member.model';
+import { IDashboard } from 'src/interface/dashboard.interface';
 
 @Injectable()
 export class ProjectService {
@@ -63,9 +64,13 @@ export class ProjectService {
         (count, plan) => count + (plan.tasks?.length || 0),
         0,
       );
-    
-      const memberCount = await this.memberService.countMemberByProjectIdForTableProject(e.id, userId);
-    
+
+      const memberCount =
+        await this.memberService.countMemberByProjectIdForTableProject(
+          e.id,
+          userId,
+        );
+
       return {
         id: e.id,
         name: e.name,
@@ -75,9 +80,9 @@ export class ProjectService {
         memberCount: memberCount,
       };
     });
-    
+
     const projectTable = await Promise.all(projectTablePromises);
-    
+
     return {
       data: projectTable,
       page: pagination.page,
@@ -85,6 +90,30 @@ export class ProjectService {
       totalPage: Math.ceil(projectCount / pagination.limit),
       totalRow: projectCount,
     };
+  }
+
+  async getDashboard(userId: number): Promise<IDashboard> {
+    const projects = await this.repository.findAll({
+      include: [
+        {
+          association: 'members',
+          where: {
+            userId: userId,
+            status: MEMBER_STATUS_ENUM.ACTIVE,
+          },
+        },
+      ],
+    });
+
+    const data = {
+      total: projects.length,
+      success: projects.filter((e) => e.percent === 100).length,
+      pending: projects.filter((e) => e.percent === 0).length,
+      onprogress: projects.filter((e) => e.percent > 0 && e.percent < 100)
+        .length,
+      projects: projects,
+    } as IDashboard;
+    return data;
   }
 
   async getProjectById(id: number): Promise<Project> {
