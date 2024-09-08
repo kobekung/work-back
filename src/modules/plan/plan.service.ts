@@ -60,13 +60,13 @@ export class PlanService {
             {
               model: this.Commentrepository,
               as: 'comment',
-              // include: [
-              //   {
-              //     model: this.Commentrepository,
-              //     as: 'comment',
-              //     order: [['id', 'ASC']],
-              //   },
-              // ],
+              include: [
+                {
+                  model: this.Userrepository,
+                  as: 'user',
+                  order: [['id', 'ASC']],
+                },
+              ],
               order: [['id', 'ASC']],
             },
           ],

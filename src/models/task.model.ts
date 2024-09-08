@@ -69,12 +69,12 @@ export class Task extends Model<Task | ITask> implements ITask {
   })
   workers?: Worker[];
 
-  // @HasMany(() => Comment, {
-  //   as: 'comment',
-  //   onDelete: 'CASCADE',
-  //   onUpdate: 'CASCADE',
-  // })
-  // comments?: Comment[];
+  @HasMany(() => Comment, {
+    as: 'comment',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  comments?: Comment[];
 
   @BelongsTo(() => Plan)
   plan: Plan;
