@@ -32,9 +32,9 @@ export class CreateTaskDto {
   @Type(() => Number)
   planId: number;
 
-  @IsBoolean()
+  @IsNumber()
     // @IsNotEmpty()
     @IsOptional()
-  @Type(() => Boolean)
-  status: boolean;
+  @Type(() => Number)
+  status: number;
 }
