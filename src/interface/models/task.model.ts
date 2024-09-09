@@ -1,3 +1,4 @@
+import { STATUS_ENUM } from 'src/enum/status.enum';
 import { IDefault } from '../default.interface';
 import { ITaskLog } from './task_log.model';
 
@@ -7,6 +8,6 @@ export interface ITask extends IDefault {
   name?: string;
   startDate?: Date;
   endDate?: Date;
-  status?: boolean;
+  status?: STATUS_ENUM;
   taskLogs?: ITaskLog[];
 }

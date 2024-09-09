@@ -75,7 +75,9 @@ export class TaskService {
       return TaskUpdated;
     } catch (err) {
       await t.rollback();
-      throw new HttpException(err.response.data, err.response.status);
+      const errorResponse = err.response && err.response.data ? err.response.data : err.message || 'Unknown error';
+      const errorStatus = err.response && err.response.status ? err.response.status : 500;
+      throw new HttpException(errorResponse, errorStatus);
     }
   }
 
