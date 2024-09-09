@@ -37,7 +37,7 @@ export class ProjectService {
     const projects = await this.repository.findAll({
       include: [
         {
-          association: 'members', // This should match the association name defined in your model
+          model: Member, // This should match the association name defined in your model
           where: {
             userId: userId,
             status: MEMBER_STATUS_ENUM.ACTIVE,
@@ -45,7 +45,6 @@ export class ProjectService {
         },
         {
           model: this.ProjectLogrepository,
-          as: 'user',
           order: [['id', 'ASC']],
         },
       ],
@@ -120,7 +119,7 @@ export class ProjectService {
         .length,
       projects: projects,
     } as IDashboard;
-    return data
+    return data;
   }
 
   async getProjectById(id: number): Promise<Project> {
