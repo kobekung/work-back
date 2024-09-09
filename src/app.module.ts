@@ -23,6 +23,6 @@ export class AppModule implements OnModuleInit {
     await this.ProjectUnitService.seed();
   }
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(VerifyMiddleware).forRoutes('project');
+    consumer.apply(VerifyMiddleware).forRoutes('project' , 'Comment', 'Member', 'pdf', 'plan', 'projectlog', 'projectUnit', 'role', 'task', 'Unit', 'worker');
   }
 }

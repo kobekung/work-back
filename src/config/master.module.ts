@@ -24,6 +24,7 @@ import { TaskModule } from 'src/modules/task/task.module';
 import { WorkerModule } from 'src/modules/worker/worker.module';
 import { Comment } from 'src/models/comment.model';
 import { CommentModule } from 'src/modules/comment/comment.module';
+import { ProjectLogModule } from 'src/modules/project_log/project_log.module';
 
 dotenv.config();
 @Module({
@@ -68,6 +69,7 @@ dotenv.config();
     PlanModule,
     TaskModule,
     WorkerModule,
+    ProjectLogModule
   ],
 })
 export class MasterModule {}

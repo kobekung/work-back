@@ -16,12 +16,14 @@ import { Op } from 'sequelize';
 import { ENUM_Role } from 'src/enum/role.enum';
 import { Member } from 'src/models/member.model';
 import { IDashboard } from 'src/interface/dashboard.interface';
+import { ProjectLog } from 'src/models/project_log.model';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectModel(Project) private repository: typeof Project,
     @InjectModel(Member) private Memberrepository: typeof Member,
+    @InjectModel(ProjectLog) private ProjectLogrepository: typeof ProjectLog,
     private readonly memberService: MemberService,
   ) {}
 
@@ -40,6 +42,11 @@ export class ProjectService {
             userId: userId,
             status: MEMBER_STATUS_ENUM.ACTIVE,
           },
+        },
+        {
+          model: this.ProjectLogrepository,
+          as: 'user',
+          order: [['id', 'ASC']],
         },
       ],
       offset: pagination.page - 1,

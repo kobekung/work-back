@@ -9,7 +9,7 @@ import {
 import { CreateProjectLogDto } from './dto/project_log.dto';
 import { ProjectLogService } from './project_log.service';
 import { ProjectLog } from 'src/models/project_log.model';
-@Controller('/project')
+@Controller('/projectlog')
 export class ProjectLogController {
   constructor(
     private readonly projectLogService: ProjectLogService,
