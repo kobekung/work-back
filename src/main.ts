@@ -10,6 +10,7 @@ async function bootstrap() {
       'http://localhost:5173',
       'https://pmms.rtarf.mi.th/v2',
       'http://localhost:5500',
+      'localhost:5173'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
