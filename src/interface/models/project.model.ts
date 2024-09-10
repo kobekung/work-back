@@ -1,0 +1,26 @@
+import { IDefault } from '../default.interface';
+import { IProjectLog } from './project_log.model';
+
+export interface IProject extends IDefault {
+  id: number;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  type?: number;
+  unit?: string;
+  status?: number;
+  percent?: number;
+  budgetYear?: number;
+  ownerUnitId?: string;
+  projectUnitId?: number;
+  logs?: IProjectLog[];
+}
+
+export interface IProjectTable {
+  id: number;
+  name: string;
+  planCount?: number;
+  taskCount?: number;
+  progress?: number;
+  memberCount?: number;
+}
