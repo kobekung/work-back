@@ -8,6 +8,9 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:5173',
+      'http://localhost:5173/',
+      'http://localhost:5173/v2',
+      'http://localhost:5173/v2/',
       'https://pmms.rtarf.mi.th/v2',
       'http://localhost:5500',
       'localhost:5173'
