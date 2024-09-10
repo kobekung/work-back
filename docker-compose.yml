@@ -6,8 +6,8 @@ services:
       - route_network
     volumes:
       - ./file-storage:/home/node/app1/file-storage
-      - ./logs:/home/node/app1/pms-v2-service/logs
-    container_name: running-pms-v2-service
+      - ./logs:/home/node/app1/pmsv2-services/logs
+    container_name: running-pmsv2-services
     restart: always
     env_file:
       - .env.prod
