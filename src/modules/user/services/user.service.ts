@@ -102,7 +102,11 @@ export class UserService {
       await t.commit();
       return loginToLdap;
     } catch (err) {
-      throw new HttpException(err.response.data, err.response.status);
+      if (err.response && err.response.data) {
+        throw new HttpException(err.response.data, err.response.status);
+      } else {
+        throw new HttpException(err.response, err.status);
+      }
     }
   }
 
