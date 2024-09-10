@@ -1,16 +1,7 @@
 #!/bin/bash
+cd /home/user/docker-service/pms-v2-docker/pmsv2-services
 
-rm -rf pms-v2-service
-
-git clone https://git.rtarf.mi.th/buffet/pmsv2-services.git
-
-cd pms-v2-service
-
-git fetch --all
-git checkout dev
-git pull origin dev
-
-cd ..
+git pull
 
 docker compose build
 docker compose down
