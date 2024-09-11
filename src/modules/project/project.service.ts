@@ -17,6 +17,7 @@ import { ENUM_Role } from 'src/enum/role.enum';
 import { Member } from 'src/models/member.model';
 import { IDashboard } from 'src/interface/dashboard.interface';
 import { ProjectLog } from 'src/models/project_log.model';
+import { Plan } from 'src/models/plan.model';
 
 @Injectable()
 export class ProjectService {
@@ -36,6 +37,14 @@ export class ProjectService {
   }): Promise<IPagination<IProjectTable>> {
     const projects = await this.repository.findAll({
       include: [
+        {
+          association: 'plans',
+          include: [
+            {
+              association: 'tasks',
+            },
+          ],
+        },
         {
           model: Member, // This should match the association name defined in your model
           where: {
