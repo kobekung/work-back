@@ -93,6 +93,7 @@ export class ProjectService {
         planCount: planCount,
         taskCount: taskCount,
         memberCount: memberCount,
+        endDate: e.endDate,
       };
     });
 
