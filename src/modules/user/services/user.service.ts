@@ -19,7 +19,6 @@ export class UserService {
   constructor(@InjectModel(User) private repository: typeof User) {}
 
   async create(user: LoginDto) {
-    const t = await this.repository.sequelize.transaction();
     try {
       const loginToLdap: ILdapResponse = (
         await axios.post(process.env.LDAP_URL, user)
@@ -32,11 +31,10 @@ export class UserService {
       if (isException) {
         await this.repository.update(
           { token: loginToLdap.token, refreshToken: loginToLdap.refreshToken },
-          { where: { idp: profile.idp }, transaction: t },
+          { where: { idp: profile.idp } },
         );
         isException.token = loginToLdap.token;
         isException.refreshToken = loginToLdap.refreshToken;
-        await t.commit();
         return isException;
       }
       const payload = {
@@ -47,14 +45,10 @@ export class UserService {
         token: loginToLdap.token,
         refreshToken: loginToLdap.refreshToken,
       } as IUser;
-      const userCreated = await this.repository.create(payload, {
-        transaction: t,
-      });
-      await t.commit();
+      const userCreated = await this.repository.create(payload);
       return userCreated;
     } catch (err) {
       console.log(err);
-      await t.rollback();
       throw new HttpException(err.response.data, err.response.status);
     }
   }
