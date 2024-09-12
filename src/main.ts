@@ -15,7 +15,7 @@ async function bootstrap() {
       'http://localhost:5500',
       'localhost:5173'
     ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: '*',
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe());
