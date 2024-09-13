@@ -47,7 +47,6 @@ export class WorkerService {
     worker: AddWorkerDto,
     // permissionStatus: MEMBER_PERISSION_ENUM,
   ) {
-    const t = await this.Workerrepository.sequelize.transaction();
     try {
       // const permission = await this.checkpermissionForProject({
       //   userId: worker.senderId ? worker.senderId : worker.userId,
@@ -72,15 +71,10 @@ export class WorkerService {
         throw new HttpException('Worker already exists', HttpStatus.CONFLICT);
       }
 
-      const workerCreated = await this.Workerrepository.create(worker, {
-        transaction: t,
-      });
-
-      await t.commit();
+      const workerCreated = await this.Workerrepository.create(worker);
       return workerCreated;
     } catch (err) {
       console.error('Transaction Error:', err); // Log error details
-      await t.rollback();
       throw new HttpException(
         err.message || 'Internal Server Error',
         err.status || HttpStatus.INTERNAL_SERVER_ERROR,
@@ -134,7 +128,6 @@ export class WorkerService {
   // }
 
   async deleteWorker(id: number): Promise<String> {
-    const t = await this.Workerrepository.sequelize.transaction();
     try {
       const getWorker = await this.Workerrepository.findByPk(id);
       if (!getWorker) {
@@ -151,10 +144,8 @@ export class WorkerService {
       await this.Workerrepository.destroy({
         where: { id },
       });
-      await t.commit();
       return 'Member Deleted Successfully';
     } catch (err) {
-      await t.rollback();
       throw new HttpException(
         err.message || 'Internal Server Error',
         err.status || HttpStatus.INTERNAL_SERVER_ERROR,

@@ -20,7 +20,6 @@ export class CommentService {
   ) {}
 
   async createComment(data: AddCommentDto, userId: number): Promise<Comment> {
-    const t = await this.repository.sequelize.transaction();
     try {
       const findUser = await this.userRepository.findByPk(userId);
       if (!findUser) {
@@ -48,12 +47,10 @@ export class CommentService {
       if (!findMember) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
-      const comment = await this.repository.create(data, { transaction: t });
-      await t.commit();
+      const comment = await this.repository.create(data);
       return comment;
     } catch (err) {
       console.log(err)
-      await t.rollback();
       throw new HttpException(err.response, err.status);
     }
   }

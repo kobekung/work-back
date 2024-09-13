@@ -49,7 +49,10 @@ export class UserService {
       return userCreated;
     } catch (err) {
       console.log(err);
-      throw new HttpException(err.response.data, err.response.status);
+      if (err.response && err.response.data) {
+        throw new HttpException(err.response.data, err.response.status);
+      }
+      throw new HttpException("Unauthorize", 401);
     }
   }
 
@@ -74,7 +77,6 @@ export class UserService {
   }
 
   async refreshTokenLdap(token: string): Promise<ILdapRefreshTokenResponse> {
-    const t = await this.repository.sequelize.transaction();
     try {
       const user = await this.repository.findOne({
         where: { refreshToken: token },
@@ -91,9 +93,8 @@ export class UserService {
           token: loginToLdap.accessToken,
           refreshToken: loginToLdap.refreshToken,
         },
-        { where: { idp: user.idp }, transaction: t },
+        { where: { idp: user.idp }},
       );
-      await t.commit();
       return loginToLdap;
     } catch (err) {
       if (err.response && err.response.data) {
