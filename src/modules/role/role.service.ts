@@ -44,15 +44,10 @@ export class RoleService {
   }
 
   async createRole(role: RoleDto): Promise<Role> {
-    const t = await this.repository.sequelize.transaction();
     try {
-      const roleCreated = await this.repository.create(role, {
-        transaction: t,
-      });
-      await t.commit();
+      const roleCreated = await this.repository.create(role);
       return roleCreated;
     } catch (err) {
-      await t.rollback();
       throw new Error(err);
     }
   }
@@ -61,31 +56,23 @@ export class RoleService {
     id: number,
     role: RoleDto,
   ): Promise<[affectedCount: number]> {
-    const t = await this.repository.sequelize.transaction();
     try {
       const roleUpdated = await this.repository.update(role, {
-        where: { id },
-        transaction: t,
+        where: { id }
       });
-      await t.commit();
       return roleUpdated;
     } catch (err) {
-      await t.rollback();
       throw new Error(err);
     }
   }
 
   async deleteRole(id: number): Promise<number> {
-    const t = await this.repository.sequelize.transaction();
     try {
       const roleDeleted = await this.repository.destroy({
-        where: { id },
-        transaction: t,
+        where: { id }
       });
-      await t.commit();
       return roleDeleted;
     } catch (err) {
-      await t.rollback();
       throw new Error(err);
     }
   }

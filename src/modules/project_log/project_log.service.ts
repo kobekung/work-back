@@ -14,33 +14,24 @@ export class ProjectLogService {
   }
 
   async createProjectLog(project_log: CreateProjectLogDto){
-    const t = await this.repository.sequelize.transaction();
     try {
-      const projectCreated = await this.repository.create(project_log, {
-        transaction: t,
-      });
-      await t.commit();
+      const projectCreated = await this.repository.create(project_log);
       return projectCreated;
     } catch (err) {
       console.log(err);
-      await t.rollback();
       throw new HttpException(err.response, err.response);
     }
   }
   async deleteProjectLog(
     id: number,
   ): Promise<number> {
-    const t = await this.repository.sequelize.transaction();
     try {
       const projectDeleted = await this.repository.destroy({
         where: { id },
-        transaction: t,
       });
-      await t.commit();
 
       return projectDeleted;
     } catch (err) {
-      await t.rollback();
       throw new Error(err);
     }
   }

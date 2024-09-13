@@ -87,7 +87,6 @@ export class MemberService {
     member: AddMemberDto,
     permissionStatus: MEMBER_PERISSION_ENUM,
   ): Promise<Member> {
-    const t = await this.repository.sequelize.transaction();
     try {
       const permission = await this.checkpermissionForProject({
         userId: member.senderId ? member.senderId : member.userId,
@@ -109,13 +108,9 @@ export class MemberService {
       if (findMember) {
         throw new HttpException('Member already exists', HttpStatus.CONFLICT);
       }
-      const memberCreated = await this.repository.create(member, {
-        transaction: t,
-      });
-      await t.commit();
+      const memberCreated = await this.repository.create(member);
       return memberCreated;
     } catch (err) {
-      await t.rollback();
       throw new HttpException(err.response, err.status);
     }
   }
@@ -124,7 +119,6 @@ export class MemberService {
     userId: number,
     member: UpdateMemberDto,
   ): Promise<[affectedCount: number]> {
-    const t = await this.repository.sequelize.transaction();
     try {
       const permission = await this.checkpermissionForProject({
         userId: userId,
@@ -136,18 +130,14 @@ export class MemberService {
       }
       const memberUpdated = await this.repository.update(member, {
         where: { id: member.id },
-        transaction: t,
       });
-      await t.commit();
       return memberUpdated;
     } catch (err) {
-      await t.rollback();
       throw new HttpException(err.response, err.status);
     }
   }
 
   async updateMemberStatus({ id, status, userId }: UpdateMemberStatusDto) {
-    const t = await this.repository.sequelize.transaction();
     try {
       const permission = await this.checkpermissionUpdates({ id, userId });
       if (!permission) {
@@ -155,18 +145,15 @@ export class MemberService {
       }
       const member = await this.repository.update(
         { status },
-        { where: { id }, transaction: t },
+        { where: { id }},
       );
-      await t.commit();
       return member;
     } catch (err) {
-      await t.rollback();
       throw new HttpException(err.response, err.status);
     }
   }
 
   async deleteMember(id: number, userId: number): Promise<String> {
-    const t = await this.repository.sequelize.transaction();
     try {
       const getMember = await this.repository.findByPk(id);
       if (!getMember) {
@@ -183,10 +170,8 @@ export class MemberService {
       await this.repository.destroy({
         where: { id },
       });
-      await t.commit();
       return 'Member Deleted Successfully';
     } catch (err) {
-      await t.rollback();
       throw new HttpException(err.response, err.status);
     }
   }

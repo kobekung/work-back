@@ -83,16 +83,11 @@ export class PlanService {
   }
 
   async createPlan(plan: CreatePlanDto): Promise<Plan> {
-    const t = await this.Planrepository.sequelize.transaction();
     try {
-      const planCreated = await this.Planrepository.create(plan, {
-        transaction: t,
-      });
-      await t.commit();
+      const planCreated = await this.Planrepository.create(plan);
       return planCreated;
     } catch (err) {
       console.log(err);
-      await t.rollback();
       throw new HttpException(err.response, err.response);
     }
   }
@@ -101,31 +96,23 @@ export class PlanService {
     id: number,
     plan: CreatePlanDto,
   ): Promise<[affectedCount: number]> {
-    const t = await this.Planrepository.sequelize.transaction();
     try {
       const planUpdated = await this.Planrepository.update(plan, {
         where: { id },
-        transaction: t,
       });
-      await t.commit();
       return planUpdated;
     } catch (err) {
-      await t.rollback();
       throw new HttpException(err.response.data, err.response.status);
     }
   }
 
   async deletePlan(id: number): Promise<number> {
-    const t = await this.Planrepository.sequelize.transaction();
     try {
       const planDeleted = await this.Planrepository.destroy({
         where: { id: id },
-        transaction: t,
       });
-      await t.commit();
       return planDeleted;
     } catch (err) {
-      await t.rollback();
       throw new Error(err.message);
     }
   }
