@@ -11,11 +11,18 @@ const PDFDocument = require('pdfkit-table');
 @Injectable()
 export class PdfService {
   constructor(@InjectModel(Project) private repository: typeof Project) {}
-
+  
   async getPDF2(userId: number, year: number): Promise<Buffer> {
     const currentYear = year - 543;
-    const startDate = new Date(currentYear - 1, 9, 1); // 1st October 2023
+    const lastTwoDigits = year.toString().slice(-2);
+    const currentMonth = new Date().getMonth();
+    const startDate = new Date(currentYear - 1, 9, 1);
     const endDate = new Date(currentYear, 8, 30);
+    const monthsForPdf = [
+      'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 
+      'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+  ];
+  const thaiMonth = monthsForPdf[currentMonth];
     const data = await this.repository.findAll({
       include: [
         {
@@ -42,7 +49,6 @@ export class PdfService {
 
     const rows2 = await data.map((project, index) => {
       // Define the start and end dates
-      const currentYear = 2024;
       const startDate = new Date(currentYear - 1, 9, 1); // 1st October 2023
       const endDate = new Date(currentYear, 8, 30); // 30th September 2024
 
@@ -81,7 +87,7 @@ export class PdfService {
       });
 
       // Header
-      doc.fontSize(16).text('รายงานสรุปผลการปฏิบัติงาน ประจำเดือน พ.ค. 67', {
+      doc.fontSize(16).text(`รายงานสรุปผลการปฏิบัติงาน ประจำเดือน ${thaiMonth} ${lastTwoDigits}`, {
         align: 'center',
       });
 
@@ -104,10 +110,10 @@ export class PdfService {
           { label: 'ลำดับ', width: 40, x: startX, height: 60 },
           { label: 'งานปฏิบัติราชการ', width: 140, x: startX + 40, height: 60 },
           { label: 'หน่วยเจ้าของระบบ', width: 100, x: startX + 180, height: 60 },
-          { label: '2566', width: 160, x: startX + 280 },
-          { label: '2567', width: 160, x: startX + 440 },
+          { label: year-1, width: 160, x: startX + 280 },
+          { label: year, width: 160, x: startX + 440 },
           {
-            label: 'สรุปการดำเนินงาน\nพ.ศ. 67',
+            label: `สรุปการดำเนินงาน\nพ.ศ. ${lastTwoDigits}`,
             width: 120,
             x: startX + 600,
             height: 60,
