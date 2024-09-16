@@ -108,8 +108,10 @@ export class ProjectService {
     };
   }
 
-  async getDashboard(userId: number): Promise<IDashboard> {
+  async getDashboard(userId: number, year?: number): Promise<IDashboard> {
+    const where = year ? { budgetYear: year } : {};
     const projects = await this.repository.findAll({
+      where,
       include: [
         {
           model: Member,

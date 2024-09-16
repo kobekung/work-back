@@ -54,11 +54,14 @@ export class ProjectController {
   @Get('/dashboard')
   async getDashboard(
     @Req() request: Request,
-    @Query() pagination: IReqPagination,
+    @Query('year') year: string,
   ): Promise<IDashboard> {
     const token = request.headers['authorization'] as string;
     const user = await this.userService.getUserByToken(token);
-    const project = await this.projectService.getDashboard(user.id);
+    const project = await this.projectService.getDashboard(
+      user.id,
+      Number(year),
+    );
     return project;
   }
 
